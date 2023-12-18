@@ -1,5 +1,5 @@
 import {inject, type Ref} from "vue";
-import {WalletWithRequiredFeatures, ReadonlyWalletAccount} from "@mysten/wallet-standard";
+import {WalletWithRequiredFeatures } from "@mysten/wallet-standard";
 import {
     PluginNotInstallError,
     WalletProviderNoExists,
@@ -7,48 +7,58 @@ import {
     WalletAccountNotFoundError,
 } from "@/errors.ts";
 
+import type {WalletStoreType} from "@/components/SuiWalletProvider/store";
+
 export const CONTEXT_NAMES = {
-    "wallets": "$sui:wallets",
-    "currentProvider": "$sui:current-provider",
-    "currentWallet": "$sui:current-wallet",
-    "currentAccount": "$sui:current-account"
+    allBrowserWallets: "$sui:all-browser-wallets",
+    allEligibleWallets: "$sui:all-eligible-wallets",
+    wallet: "$sui:current-wallet",
 }
 
 /*
-    * check if the returned value of target function is undefined, if so, throw the error
+    * check if the returned value of target function is undefined or null, if so, throw the error
  */
 function checkIsUndefinedReturned<Func extends (...args: any[]) => any>(
-    e: Error,
+    err: Error,
     target: Func
 ): (...args: Parameters<Func>) => Exclude<ReturnType<Func>, undefined> {
     function deco(...args: any[]) {
-        let result = target(...args)
-        if (result === undefined) {
-            throw e
+        try {
+            var result = target(...args)
+        } catch {
+            throw err
         }
+
+        if (result === undefined || result === null) {
+            throw err
+        }
+
         return result
     }
 
     return deco
 }
 
-export const getWallets = checkIsUndefinedReturned(
+export const getAllBrowserWallets = checkIsUndefinedReturned(
     new PluginNotInstallError("sui-dapp-kit: plugin not installed"),
-    () => inject<WalletWithRequiredFeatures[]>(CONTEXT_NAMES['wallets'])
+    () => inject<Ref<WalletWithRequiredFeatures[]>>(CONTEXT_NAMES.allBrowserWallets)?.value
 )
 
-// rewrite as below
-export const getCurrentProvider = checkIsUndefinedReturned(
+
+export const getWallet = checkIsUndefinedReturned(
     new WalletProviderNoExists("sui-dapp-kit: current provider not found, check it is installed or not"),
-    () => inject<Ref<WalletWithRequiredFeatures>>(CONTEXT_NAMES['currentProvider'])
+    () => inject<WalletStoreType>(CONTEXT_NAMES['wallet'])
 )
 
-export const getCurrentWallet = checkIsUndefinedReturned(
-    new WalletNotConnectedError("sui-dapp-kit: current wallet not found, check it is connected or not"),
-    () => inject<Ref<WalletWithRequiredFeatures>>(CONTEXT_NAMES['currentWallet'])?.value
-)
 
-export const getCurrentAccount = checkIsUndefinedReturned(
+export const getAccount = checkIsUndefinedReturned(
     new WalletAccountNotFoundError("sui-dapp-kit: current account not found, check it is selected or not"),
-    () => inject<Ref<ReadonlyWalletAccount>>(CONTEXT_NAMES['currentAccount'])?.value
+    () => getWallet().currentAccount
 )
+
+export const getSuiClient = checkIsUndefinedReturned(
+    new WalletNotConnectedError("sui-dapp-kit: wallet not connected, please connect wallet first"),
+    () => getWallet().client
+)
+
+

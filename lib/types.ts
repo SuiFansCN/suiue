@@ -1,3 +1,7 @@
-export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<T>;
+import type {Wallet} from "@mysten/wallet-standard";
 
-export type SuiNetworks = "mainnet" | "testnet" | "devnet" | "localnet";
+export type SuiNetworksType = "mainnet" | "testnet" | "devnet" | "localnet";
+
+export type AutoConnectType = "enable" | "disable" | "last";
+
+export type BrowserWalletType = Wallet;

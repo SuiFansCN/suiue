@@ -2,7 +2,7 @@ import type {Plugin} from "vue";
 import type {Wallet} from "@mysten/wallet-standard";
 import {getWallets} from "@mysten/wallet-standard";
 import {getActivePinia} from "pinia";
-import {shallowReactive} from "vue";
+import {shallowRef} from "vue";
 
 import {CONTEXT_NAMES} from "./walletContext.ts";
 import {PiniaNotReadyError} from "./errors.ts";
@@ -20,8 +20,8 @@ export const SuiDappKit: Plugin = {
 
 
         // ============ install context-wallets ============
-        let wallets = shallowReactive<Wallet[]>([]);
-        app.provide(CONTEXT_NAMES["wallets"], wallets);
+        let wallets = shallowRef<Wallet[]>([]);
+        app.provide(CONTEXT_NAMES.allBrowserWallets, wallets);
         // =================================================
 
 
@@ -30,11 +30,7 @@ export const SuiDappKit: Plugin = {
                 return
             }
 
-            if (!(wallet && wallet.features && wallet.features["standard:connect"])) {
-                return;
-            }
-
-            wallets.push(wallet)
+            wallets.value.push(wallet)
         }
 
         let walletsApi = getWallets();
@@ -51,9 +47,9 @@ export const SuiDappKit: Plugin = {
 
         // add event listener for wallet removed
         walletsApi.on("unregister", (wallet) => {
-            let index = wallets.indexOf(wallet)
+            let index = wallets.value.indexOf(wallet)
             if (index >= 0) {
-                wallets.splice(index, 1)
+                wallets.value.splice(index, 1)
             }
         })
 
