@@ -1,12 +1,13 @@
 import {defineStore, getActivePinia} from "pinia";
-import type {SuiClient} from "@mysten/sui.js/client";
-import type {AutoConnectType, SuiNetworksType, BrowserWalletType} from "@/types.ts";
 import {WalletError} from "@/errors.ts";
 
+import type {SuiClient} from "@mysten/sui.js/client";
+import type {AutoConnectType, SuiNetworksType, BrowserWalletType} from "@/types.ts";
 import type {
     WalletWithRequiredFeatures,
     WalletAccount,
 } from '@mysten/wallet-standard';
+import {getWalletIdentifier, updateWalletConnectionInfo} from "@/walletUtils.ts";
 
 
 export type WalletStoreType = ReturnType<typeof createWalletStore>
@@ -32,25 +33,15 @@ export function createWalletStore(options: {
             currentAccount: null as WalletAccount | null,
 
             _browserWallet: null as BrowserWalletType | null,
-            _lastConnectedWalletName: null as string | null,
-            _lastConnectedAccountAddress: null as string | null,
         }),
         getters: {
             isConnected: (state) => state.currentAccount !== null,
-
             walletNetwork: (state) => `sui:${state.network}`,
-
         },
         actions: {
-            // async autoConnect() {
-            //     let connectStorage = JSON.parse(
-            //         localStorage.getItem(`sui-dapp-kit:connect:${options.id}`) || "{}"
-            //     )
-            //
-            //     // TODO
-            //
-            // },
             async connect(wallet: WalletWithRequiredFeatures) {
+                this.isConnected && this.disconnect()
+                
                 try {
                     var result = await wallet.features["standard:connect"].connect()
                 } catch {
@@ -59,10 +50,13 @@ export function createWalletStore(options: {
                 this._browserWallet = wallet
                 this.accounts.push(...result.accounts)
                 this.currentAccount = result.accounts[0]
-                this._lastConnectedAccountAddress = result.accounts[0].address
-                this._lastConnectedWalletName = wallet.name
 
-                // listen disconnect for wallet-side
+                updateWalletConnectionInfo(this.$id, {
+                    wallet_ident: getWalletIdentifier(wallet),
+                    account_addr: this.currentAccount.address
+                })
+
+                // listen disconnect or change for wallet-side
                 wallet.features["standard:events"].on("change", (params) => {
                     if (params.accounts?.length === 0) {
                         this.disconnect()
@@ -71,11 +65,13 @@ export function createWalletStore(options: {
                 return result
             },
             disconnect() {
-                this.accounts.length = 0;
+                this.accounts.splice(0, this.accounts.length);
                 this.currentAccount = null
                 this._browserWallet = null
-                this._lastConnectedAccountAddress = null
-                this._lastConnectedWalletName = null
+                updateWalletConnectionInfo(this.$id, {
+                    wallet_ident: null,
+                    account_addr: null
+                })
             },
             async signPersonalMessage() {
 

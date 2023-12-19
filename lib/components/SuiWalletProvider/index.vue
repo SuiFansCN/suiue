@@ -3,16 +3,18 @@
 </template>
 
 <script setup lang="ts">
-import {computed, inject, provide, Ref} from "vue";
+import {computed, inject, onMounted, provide, Ref} from "vue";
 import {getFullnodeUrl} from "@mysten/sui.js/client"
 import {SuiClient} from "@mysten/sui.js/client";
+import {isWalletWithRequiredFeatureSet} from "@mysten/wallet-standard";
 
 import {CONTEXT_NAMES} from "@/walletContext.ts";
-import {isWalletWithRequiredFeatureSet} from "@mysten/wallet-standard";
 import {createWalletStore, type WalletStoreType} from "./store"
-import type {IdentifierString} from "@mysten/wallet-standard";
+import {getWalletConnectionInfo, getWalletIdentifier} from "@/walletUtils.ts";
+import type {IdentifierString, WalletAccount} from "@mysten/wallet-standard";
 import type {SuiClientOptions} from "@mysten/sui.js/client";
 import type {SuiNetworksType, AutoConnectType, BrowserWalletType} from "@/types.ts";
+
 
 
 const props = defineProps({
@@ -56,7 +58,7 @@ const client = new SuiClient(props.customClientParam ? props.customClientParam :
     url: getFullnodeUrl(props.network),
 })
 
-const store = createWalletStore({
+const walletStore = createWalletStore({
     id: props.id,
     network: props.network,
     suiClient: client,
@@ -89,11 +91,43 @@ const allEligibleWallets = computed((): BrowserWalletType[] => {
     ] as BrowserWalletType[]
 })
 
+async function autoConnect(){
+    let allWallets = allEligibleWallets.value;
+    if (props.autoConnect === "disable" || allWallets.length === 0 || !walletStore) {
+        return
+    }
+
+    let connectionInfo = getWalletConnectionInfo(props.id)
+
+    // have connection-info
+    if (connectionInfo) {
+        // auto connect
+        if (props.autoConnect === "last"){
+            let wallet = allWallets.find((wallet) => getWalletIdentifier(wallet) === connectionInfo?.wallet_ident)
+            wallet && await walletStore.connect(wallet)
+
+            // change to last account if
+            let found_account = walletStore.accounts.find((account: WalletAccount) => account.address === connectionInfo?.account_addr)
+            found_account && (walletStore.currentAccount = found_account)
+        }
+        return;
+    } else {
+        // Not connected yet for every.
+        if (props.autoConnect === "enable") {
+            await walletStore.connect(allWallets[0])
+        }
+    }
+}
+
 provide(CONTEXT_NAMES.allEligibleWallets, allEligibleWallets.value)
 emits("update:allBrowserWallets", allEligibleWallets)
 
 // pass to superior
-emits("update:wallet", store)
-provide(CONTEXT_NAMES.wallet, store)
+emits("update:wallet", walletStore)
+provide(CONTEXT_NAMES.wallet, walletStore)
+
+onMounted(async () => {
+    await autoConnect()
+})
 
 </script>

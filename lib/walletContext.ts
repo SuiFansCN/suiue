@@ -1,5 +1,5 @@
 import {inject, type Ref} from "vue";
-import {WalletWithRequiredFeatures } from "@mysten/wallet-standard";
+import type {WalletWithRequiredFeatures } from "@mysten/wallet-standard";
 import {
     PluginNotInstallError,
     WalletProviderNoExists,
