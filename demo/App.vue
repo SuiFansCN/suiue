@@ -1,5 +1,8 @@
 <template>
     <SuiWalletProvider v-model:all-browser-wallets="allWallets" v-model:wallet="wallet">
+        <div>
+            currentWallet: {{ wallet?.identify }}
+        </div>
         <ul>
             <li v-for="browserWallet in allWallets" :key="browserWallet.name">
                 <img :src="browserWallet.icon" height="32" alt="wallet logo">
@@ -7,6 +10,7 @@
                 <button @click="wallet?.connect(browserWallet)">Connect</button>
             </li>
         </ul>
+        <div>accounts:</div>
         <ul>
             <li v-for="account in wallet?.accounts" :key="account.address">{{account.address}}</li>
         </ul>
