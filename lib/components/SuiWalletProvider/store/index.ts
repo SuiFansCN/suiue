@@ -2,16 +2,15 @@ import {defineStore, getActivePinia} from "pinia";
 import {WalletError} from "@/errors.ts";
 
 import type {Store, StateTree, _GettersTree, _ActionsTree} from "pinia"
-import type {SuiClient} from "@mysten/sui.js/client";
-import type {AutoConnectType, SuiNetworksType, BrowserWalletType} from "@/types.ts";
+import type {SuiClient, SuiTransactionBlockResponseOptions} from "@mysten/sui.js/client";
+import { TransactionBlock } from '@mysten/sui.js/transactions';
+import type {AutoConnectType, SuiNetworksType} from "@/types.ts";
 import type {
+    WalletWithSuiFeatures,
     WalletWithRequiredFeatures,
     WalletAccount,
-    SuiSignPersonalMessageInput,
     SuiSignPersonalMessageOutput,
-    SuiSignTransactionBlockInput,
     SuiSignTransactionBlockOutput,
-    SuiSignAndExecuteTransactionBlockInput,
     SuiSignAndExecuteTransactionBlockOutput,
     StandardConnectOutput
 } from '@mysten/wallet-standard';
@@ -23,7 +22,7 @@ interface StoreStateType extends StateTree {
     network: SuiNetworksType,
     accounts: WalletAccount[],
     currentAccount: WalletAccount | null,
-    _browserWallet: BrowserWalletType | null,
+    _browserWallet: WalletWithSuiFeatures | null,
 }
 
 interface StoreGettersType<S extends StateTree> extends _GettersTree<S> {
@@ -35,10 +34,9 @@ interface StoreGettersType<S extends StateTree> extends _GettersTree<S> {
 interface StoreActionsType extends _ActionsTree {
     connect: (wallet: WalletWithRequiredFeatures) => Promise<StandardConnectOutput>,
     disconnect: () => void,
-    signPersonalMessage: (input: SuiSignPersonalMessageInput) => Promise<SuiSignPersonalMessageOutput>,
-    signTransactionBlock: (input: SuiSignTransactionBlockInput) => Promise<SuiSignTransactionBlockOutput>,
-    signAndExecuteTransactionBlock: (input: SuiSignAndExecuteTransactionBlockInput) => Promise<SuiSignAndExecuteTransactionBlockOutput>,
-    callCustomWalletMethod: (method: string, params: object) => Promise<object>,
+    signPersonalMessage: (message: Uint8Array) => Promise<SuiSignPersonalMessageOutput>,
+    signTransactionBlock: (transactionBlock: TransactionBlock) => Promise<SuiSignTransactionBlockOutput>,
+    signAndExecuteTransactionBlock: (transactionBlock: TransactionBlock, options: SuiTransactionBlockResponseOptions) => Promise<SuiSignAndExecuteTransactionBlockOutput>,
 }
 
 export type WalletStoreType = Store<string, StoreStateType, StoreGettersType<StoreStateType>, StoreActionsType>
@@ -48,7 +46,7 @@ export function createWalletStore<Id extends string>(options: {
     network: SuiNetworksType;
     suiClient: InstanceType<typeof SuiClient>,
     autoConnect: AutoConnectType
-}): WalletStoreType<Id> {
+}): WalletStoreType {
     // check if the wallet provider already exists
     if (getActivePinia()?.state.value[options.id]) {
         console.warn(`sui-dapp-kit: wallet provider id:${options.id} already exists, if you want to work-by multi wallet, please append a unique id to each wallet provider`)
@@ -58,13 +56,13 @@ export function createWalletStore<Id extends string>(options: {
 
     return defineStore<Id, StoreStateType, StoreGettersType<StoreStateType>, StoreActionsType>(options.id, {
         state: () => ({
-            identify: null as string | null,
+            identify: null,
             client: options.suiClient,
             network: options.network,
-            accounts: [] as WalletAccount[],
-            currentAccount: null as WalletAccount | null,
+            accounts: [],
+            currentAccount: null,
 
-            _browserWallet: null as BrowserWalletType | null,
+            _browserWallet: null,
         }),
         getters: {
             isConnected() {
@@ -84,7 +82,7 @@ export function createWalletStore<Id extends string>(options: {
                     throw new WalletError("sui-dapp-kit: connect wallet failed")
                 }
 
-                this._browserWallet = wallet
+                this._browserWallet = wallet as any
                 this.accounts.push(...result.accounts)
                 this.currentAccount = result.accounts[0]
                 this.identify = getWalletIdentifier(wallet)
@@ -112,18 +110,27 @@ export function createWalletStore<Id extends string>(options: {
                     account_addr: null
                 })
             },
-            async signPersonalMessage(input: SuiSignPersonalMessageInput) {
-
+            async signPersonalMessage(message: Uint8Array) {
+                return await this._browserWallet!.features["sui:signPersonalMessage"].signPersonalMessage({
+                    message,
+                    account: this.currentAccount!
+                })
             },
-            async signTransactionBlock(input: SuiSignTransactionBlockInput) {
-
+            async signTransactionBlock(transactionBlock: TransactionBlock,) {
+                return await this._browserWallet!.features["sui:signTransactionBlock"].signTransactionBlock({
+                    transactionBlock,
+                    chain: this.walletNetwork as any,
+                    account: this.currentAccount!,
+                });
             },
-            async signAndExecuteTransactionBlock(input: SuiSignAndExecuteTransactionBlockInput) {
-                this._browserWallet?.features["sui:sign-and-execute-transaction-block"].signAndExecuteTransactionBlock(input)
-            },
-            // async callCustomWalletMethod(method: string, params: any[]) {
-            //
-            // }
+            async signAndExecuteTransactionBlock(transactionBlock: TransactionBlock, options: SuiTransactionBlockResponseOptions) {
+                return await this._browserWallet!.features["sui:signAndExecuteTransactionBlock"].signAndExecuteTransactionBlock({
+                    transactionBlock: transactionBlock,
+                    chain: this.walletNetwork as any,
+                    account: this.currentAccount!,
+                    options,
+                })
+            }
         }
         // () is important here
     })()
