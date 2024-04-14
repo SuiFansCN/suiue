@@ -3,8 +3,8 @@ import {WalletError} from "@/errors.ts";
 
 import type {Store, StateTree, _GettersTree, _ActionsTree} from "pinia"
 import type {SuiClient, SuiTransactionBlockResponseOptions} from "@mysten/sui.js/client";
-import { TransactionBlock } from '@mysten/sui.js/transactions';
-import type {AutoConnectType, SuiNetworksType} from "@/types.ts";
+import type {TransactionBlock} from '@mysten/sui.js/transactions';
+import type {AutoConnectType, BrowserWalletType, SuiNetworksType} from "@/types.ts";
 import type {
     WalletWithSuiFeatures,
     WalletWithRequiredFeatures,
@@ -32,7 +32,7 @@ interface StoreGettersType<S extends StateTree> extends _GettersTree<S> {
 
 
 interface StoreActionsType extends _ActionsTree {
-    connect: (wallet: WalletWithRequiredFeatures) => Promise<StandardConnectOutput>,
+    connect: (wallet: BrowserWalletType) => Promise<StandardConnectOutput>,
     disconnect: () => void,
     signPersonalMessage: (message: Uint8Array) => Promise<SuiSignPersonalMessageOutput>,
     signTransactionBlock: (transactionBlock: TransactionBlock) => Promise<SuiSignTransactionBlockOutput>,
@@ -73,11 +73,11 @@ export function createWalletStore<Id extends string>(options: {
             },
         },
         actions: {
-            async connect(wallet: WalletWithRequiredFeatures) {
+            async connect(wallet: BrowserWalletType) {
                 this.isConnected && this.disconnect()
 
                 try {
-                    var result = await wallet.features["standard:connect"].connect()
+                    var result = await (wallet as WalletWithRequiredFeatures).features["standard:connect"].connect()
                 } catch {
                     throw new WalletError("sui-dapp-kit: connect wallet failed")
                 }
@@ -90,14 +90,14 @@ export function createWalletStore<Id extends string>(options: {
                 updateWalletConnectionInfo(this.$id, {
                     wallet_ident: getWalletIdentifier(wallet),
                     account_addr: result.accounts[0].address
-                })
+                });
 
                 // listen disconnect or change for wallet-side
-                wallet.features["standard:events"].on("change", (params) => {
+                (wallet as WalletWithRequiredFeatures).features["standard:events"].on("change", (params) => {
                     if (params.accounts?.length === 0) {
                         this.disconnect()
                     }
-                })
+                });
                 return result
             },
             disconnect() {

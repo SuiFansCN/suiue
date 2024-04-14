@@ -24,18 +24,8 @@
         "baseUrl": "./",
         "paths": {
             "@/*": [
-                "lib/*"
+                "src/*"
             ],
-            // for demo
-            "@@/*": [
-                "demo/*"
-            ],
-            "vue-sui-dapp-kit": [
-                "lib/index.ts"
-            ],
-            "vue-sui-dapp-kit/*": [
-                "lib/*"
-            ]
         }
     },
     "include": [

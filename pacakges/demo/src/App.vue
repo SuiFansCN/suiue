@@ -14,19 +14,23 @@
         <ul>
             <li v-for="account in wallet?.accounts" :key="account.address">{{account.address}}</li>
         </ul>
+        <VWo50/>
     </SuiWalletProvider>
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {inject, onMounted, ref} from "vue";
 import {SuiWalletProvider} from "vue-sui-dapp-kit";
 import type {BrowserWalletType, WalletStoreType} from "vue-sui-dapp-kit";
+import VWo50 from "@@/components/vWo50.vue";
 
 const allWallets = ref<BrowserWalletType[]>()
 const wallet = ref<WalletStoreType>()
 
-onMounted(async () => {
-    console.log(wallet)
+// const abc = inject("abc");
+
+onMounted( () => {
+    // console.log(wallet)
 })
 </script>
 

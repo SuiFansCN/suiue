@@ -9,7 +9,7 @@ export default defineConfig({
     plugins: [
         vue(),
         dts({
-            outDir: "./dist/types",
+            outDir: "./lib/types",
             include: [
                 "./lib",
             ]
@@ -31,12 +31,12 @@ export default defineConfig({
         },
         watch: {
             clearScreen: true,
-            include: ["lib/**"]
+            include: ["src/**"]
         },
-        outDir: "./dist",
+        outDir: "./lib",
         lib: {
-            entry: resolve(__dirname, "lib/index.ts"),
-            name: "vue-sui-dapp-kit",
+            entry: resolve(__dirname, "src/index.ts"),
+            name: "suiue",
             formats: ["cjs", "es", "umd"],
             fileName: (format) => `index.${format}.js`,
         },
@@ -45,12 +45,7 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@': resolve(__dirname, './lib'),
-
-            // for demo test
-            "@@": resolve(__dirname, './demo'),
-            "vue-sui-dapp-kit": "./lib/index.ts",
-            "vue-sui-dapp-kit/*": resolve(__dirname, './lib')
+            '@': resolve(__dirname, './src'),
         }
     }
 })

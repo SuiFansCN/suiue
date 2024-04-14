@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let wallet of window.getWallets.get() as WalletWithRequiredFeatures[]){
         window.wallets.push(wallet)
         wallet.features["standard:events"].on("change", (e) => {
-            console.log(`wallet ${wallet.name} event`)
-            console.log(e)
+            console.debug(`wallet ${wallet.name} event`)
+            console.debug(e)
         })
     }
 

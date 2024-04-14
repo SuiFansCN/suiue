@@ -1,0 +1,52 @@
+{
+    "name": "@suifans/suiue",
+    "version": "0.1.0",
+    "author": "SuiFansCN",
+    "license": "MIT",
+    "keywords": [
+        "vue",
+        "web3",
+        "sui",
+        "dapp"
+    ],
+    "type": "module",
+    "main": "./lib/index.ts",
+    "exports": {
+        ".": {
+            "import": "./lib/index.esm.js",
+            "node": "./lib/index.umd.js",
+            "require": "./lib/index.cjs.js",
+            "types": "./lib/types/index.d.ts"
+        }
+    },
+    "scripts": {
+        "dev": "vite",
+        "test": "vitest",
+        "build": "vue-tsc && vite build",
+        "preview": "vite preview"
+    },
+    "files": [
+        "CHANGELOG.md",
+        "LICENSE",
+        "README.md",
+        "dist",
+        "src"
+    ],
+    "dependencies": {
+        "@mysten/sui.js": "^0.48.1",
+        "@mysten/wallet-standard": "^0.9.0",
+        "pinia": "^2.1.7",
+        "vue": "^3.3.11"
+    },
+    "devDependencies": {
+        "@types/node": "^20.10.4",
+        "@vitejs/plugin-vue": "^4.5.2",
+        "@vue/test-utils": "2.4.0-alpha.2",
+        "happy-dom": "^12.10.3",
+        "typescript": "^5.2.2",
+        "vite": "^5.0.8",
+        "vite-plugin-dts": "^3.6.4",
+        "vitest": "^1.0.4",
+        "vue-tsc": "^1.8.25"
+    }
+}

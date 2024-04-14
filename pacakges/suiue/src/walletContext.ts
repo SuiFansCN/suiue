@@ -7,7 +7,9 @@ import {
     WalletAccountNotFoundError,
 } from "@/errors.ts";
 
+import type { SuiClient } from "@mysten/sui.js/client";
 import type {WalletStoreType} from "@/components/SuiWalletProvider/store";
+import {getWallets} from "@mysten/wallet-standard";
 
 export const CONTEXT_NAMES = {
     allBrowserWallets: "$sui:all-browser-wallets",
@@ -21,7 +23,7 @@ export const CONTEXT_NAMES = {
 function checkIsUndefinedReturned<Func extends (...args: any[]) => any>(
     err: Error,
     target: Func
-): (...args: Parameters<Func>) => Exclude<ReturnType<Func>, undefined> {
+): (...args: Parameters<Func>) => Exclude<ReturnType<Func>, undefined | null> {
     function deco(...args: any[]) {
         try {
             var result = target(...args)
@@ -58,7 +60,14 @@ export const getAccount = checkIsUndefinedReturned(
 
 export const getSuiClient = checkIsUndefinedReturned(
     new WalletNotConnectedError("sui-dapp-kit: wallet not connected, please connect wallet first"),
-    () => getWallet().client
+    () => getWallet().client as InstanceType<typeof SuiClient>
+    // Do not delete the type assertion here, otherwise an error will be reported
 )
 
+export function onWalletConnect<T extends CallableFunction>(func: T): T {
+    for(let wallet of getAllBrowserWallets()){
+        wallet.features["standard:events"].on("change", func as any)
+    }
+    return func
+}
 
