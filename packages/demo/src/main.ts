@@ -3,8 +3,10 @@
 import {createApp} from 'vue'
 import App from './App.vue'
 import {createPinia} from "pinia";
-import {SuiDappKit} from "vue-sui-dapp-kit";
+import {SuiDappKit} from "@suifans/suiue";
 import {getWallets, WalletWithRequiredFeatures} from "@mysten/wallet-standard";
+
+
 
 const app = createApp(App)
 app.use(createPinia())

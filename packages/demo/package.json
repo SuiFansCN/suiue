@@ -1,0 +1,30 @@
+{
+    "name": "@suifans/suiue-demo",
+    "version": "0.1.0",
+    "private": true,
+    "author": "SuiFansCN",
+    "license": "MIT",
+    "keywords": [
+        "vue",
+        "web3",
+        "sui",
+        "dapp"
+    ],
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "test": "vitest",
+        "build": "vue-tsc && vite build",
+        "preview": "vite preview"
+    },
+    "files": [
+        "CHANGELOG.md",
+        "LICENSE",
+        "README.md",
+        "dist",
+        "src"
+    ],
+    "dependencies": {
+        "@suifans/suiue": "workspace:^"
+    }
+}

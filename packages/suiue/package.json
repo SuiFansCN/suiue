@@ -1,0 +1,45 @@
+{
+    "name": "@suifans/suiue",
+    "version": "0.1.0",
+    "author": "SuiFansCN",
+    "license": "MIT",
+    "keywords": [
+        "vue",
+        "web3",
+        "sui",
+        "dapp"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SuiFansCN/suiue.git"
+    },
+    "homepage": "https://github.com/SuiFansCN/suiue",
+    "type": "module",
+    "main": "lib/index.cjs.js",
+    "module": "lib/index.esm.js",
+    "types": "lib/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./lib/suiue.js",
+            "require": "./lib/suiue.cjs",
+            "node": "./lib/suiue.umd.cjs",
+            "types": "./lib/index.d.ts"
+        }
+    },
+    "scripts": {
+        "dev": "vite",
+        "test": "vitest",
+        "build": "vue-tsc && vite build",
+        "preview": "vite preview"
+    },
+    "files": [
+        "CHANGELOG.md",
+        "LICENSE",
+        "README.md",
+        "/lib",
+        "package.json"
+    ],
+    "devDependencies": {
+        "happy-dom": "^12.10.3"
+    }
+}

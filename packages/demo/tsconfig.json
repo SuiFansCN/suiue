@@ -21,7 +21,7 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
-        "baseUrl": "./",
+        "baseUrl": ".",
         "paths": {
             "@/*": [
                 "src/*"
@@ -30,6 +30,7 @@
     },
     "include": [
         "**/*.ts",
+        "**/*.ts.d",
         "**/*.vue",
         "**/*.tsx",
     ],

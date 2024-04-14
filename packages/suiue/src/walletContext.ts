@@ -9,7 +9,7 @@ import {
 
 import type { SuiClient } from "@mysten/sui.js/client";
 import type {WalletStoreType} from "@/components/SuiWalletProvider/store";
-import {getWallets} from "@mysten/wallet-standard";
+// import {getWallets} from "@mysten/wallet-standard";
 
 export const CONTEXT_NAMES = {
     allBrowserWallets: "$sui:all-browser-wallets",

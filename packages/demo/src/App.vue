@@ -20,9 +20,9 @@
 
 <script setup lang="ts">
 import {inject, onMounted, ref} from "vue";
-import {SuiWalletProvider} from "vue-sui-dapp-kit";
-import type {BrowserWalletType, WalletStoreType} from "vue-sui-dapp-kit";
-import VWo50 from "@@/components/vWo50.vue";
+import {SuiWalletProvider} from "@suifans/suiue";
+import type {BrowserWalletType, WalletStoreType} from "@suifans/suiue";
+import VWo50 from "@/components/vWo50.vue";
 
 const allWallets = ref<BrowserWalletType[]>()
 const wallet = ref<WalletStoreType>()

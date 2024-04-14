@@ -21,17 +21,17 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
-        "baseUrl": "./",
+        "baseUrl": ".",
         "paths": {
-            "@/*": [
-                "src/*"
-            ],
-        }
+            "@/*": ["./src/*"],
+        },
+        "declaration": true,
+        "outDir": "./lib/types",
     },
     "include": [
-        "**/*.ts",
-        "**/*.vue",
-        "**/*.tsx",
+        "src/**/*.ts",
+        "src/**/*.vue",
+        "src/**/*.tsx",
     ],
     "references": [
         {

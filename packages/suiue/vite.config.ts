@@ -9,10 +9,11 @@ export default defineConfig({
     plugins: [
         vue(),
         dts({
-            outDir: "./lib/types",
-            include: [
-                "./lib",
-            ]
+            rollupTypes: true,
+            // outDir: "./lib/types",
+            // include: [
+            //     "./src",
+            // ]
         }),
     ],
     test: {
@@ -20,6 +21,8 @@ export default defineConfig({
         include: ["tests/**"],
     },
     build: {
+
+        minify: false,
         rollupOptions: {
             // treeshake: false,
             external: [
@@ -27,7 +30,6 @@ export default defineConfig({
                 "pinia",
                 "@mysten/sui.js",
             ],
-
         },
         watch: {
             clearScreen: true,
@@ -38,7 +40,7 @@ export default defineConfig({
             entry: resolve(__dirname, "src/index.ts"),
             name: "suiue",
             formats: ["cjs", "es", "umd"],
-            fileName: (format) => `index.${format}.js`,
+            // fileName: (format) => `index.${format}.js`,
         },
         sourcemap: true,
 
