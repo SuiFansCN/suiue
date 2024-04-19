@@ -25,6 +25,11 @@
         "src"
     ],
     "dependencies": {
+        "@mysten/sui.js": "^0.51.2",
+        "@mysten/wallet-standard": "^0.11.2",
         "@suifans/suiue": "workspace:^"
+    },
+    "devDependencies": {
+        "ts-node": "^10.9.2"
     }
 }

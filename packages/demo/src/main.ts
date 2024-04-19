@@ -1,16 +1,14 @@
 /// <reference types="./global-wallets.d.ts" />
 
 import {createApp} from 'vue'
-import App from './App.vue'
-import {createPinia} from "pinia";
-import {SuiDappKit} from "@suifans/suiue";
+import App from './ProviderWrapper.vue'
+import { createSuiue } from "@suifans/suiue";
 import {getWallets, WalletWithRequiredFeatures} from "@mysten/wallet-standard";
 
 
 
 const app = createApp(App)
-app.use(createPinia())
-app.use(SuiDappKit)
+app.use(createSuiue())
 app.mount('#app')
 
 document.addEventListener("DOMContentLoaded", () => {

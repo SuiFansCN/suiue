@@ -1,14 +1,32 @@
-# vue-sui-dapp-kit
+# suiue
 
 > the vue dapp-kit for sui
 
 ## install
 
 ```bash
-npm install vue-sui-dapp-kit
+npm install @suifans/suiue
 ```
 
 ## examples
+```typescript
+
+const {
+    signPresonalMessage,
+    signAndExecuteTransactionBlock,
+    SignTransactionBlock,
+} = useWalletAction()
+
+// if wallet is not connected, it will open the wallet connect modal and continue
+signAndExecuteTransactionBlock(...)
+
+
+const {
+    address
+    getAllCoins,
+    getSuiCoin
+} = useWalletInfo()
+```
 
 请看 [vue-sui-dapp-kit-example](./demo/App.vue)
 

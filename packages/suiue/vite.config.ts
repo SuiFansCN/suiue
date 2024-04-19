@@ -21,15 +21,19 @@ export default defineConfig({
         include: ["tests/**"],
     },
     build: {
-
         minify: false,
         rollupOptions: {
-            // treeshake: false,
             external: [
+                // !!! 重要，否则在库内定义的 ref 会被 vite 打包进去，导致在使用库的项目中出现多个 vue 实例
                 "vue",
-                "pinia",
-                "@mysten/sui.js",
             ],
+            output: {
+                globals: {
+                    vue: "Vue",
+                },
+
+            },
+            input: ["src/exports.ts"]
         },
         watch: {
             clearScreen: true,
@@ -37,7 +41,7 @@ export default defineConfig({
         },
         outDir: "./lib",
         lib: {
-            entry: resolve(__dirname, "src/index.ts"),
+            entry: resolve(__dirname, "src/exports.ts"),
             name: "suiue",
             formats: ["cjs", "es", "umd"],
             // fileName: (format) => `index.${format}.js`,

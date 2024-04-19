@@ -23,9 +23,6 @@
         "preview": "pnpm run --filter @suifans/suiue vite preview"
     },
     "dependencies": {
-        "@mysten/sui.js": "^0.51.2",
-        "@mysten/wallet-standard": "^0.11.2",
-        "pinia": "^2.1.7",
         "vue": "^3.4.21"
     },
     "devDependencies": {

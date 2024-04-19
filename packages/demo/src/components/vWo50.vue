@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { getSuiClient, getAccount } from "vue-sui-dapp-kit"
-import { onMounted } from "vue";
+import {useWallet} from "@suifans/suiue"
 
 // const client = getSuiClient()
-// const account = getAccount()
+const wallet = useWallet()
 
+async function vWo50() {
 
+}
 
 </script>
 
 <template>
+    <div>
+
+        <button @click="vWo50">V我50</button>
+    </div>
 
 </template>
