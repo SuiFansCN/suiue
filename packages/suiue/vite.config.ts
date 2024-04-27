@@ -3,18 +3,24 @@ import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import {resolve} from "path";
 import dts from "vite-plugin-dts";
+// import { chunkSplitPlugin } from 'vite-plugin-chunk-split';
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         vue(),
         dts({
-            rollupTypes: true,
-            // outDir: "./lib/types",
+            rollupTypes: false,
+
+            outDir: "./lib/types",
+            
             // include: [
             //     "./src",
             // ]
         }),
+        // chunkSplitPlugin({
+        //     strategy: "unbundle",
+        // })
     ],
     test: {
         environment: "happy-dom",
@@ -31,7 +37,6 @@ export default defineConfig({
                 globals: {
                     vue: "Vue",
                 },
-
             },
             input: ["src/exports.ts"]
         },
@@ -43,7 +48,7 @@ export default defineConfig({
         lib: {
             entry: resolve(__dirname, "src/exports.ts"),
             name: "suiue",
-            formats: ["cjs", "es", "umd"],
+            formats: ["umd", "es"],
             // fileName: (format) => `index.${format}.js`,
         },
         sourcemap: true,

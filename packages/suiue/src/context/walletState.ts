@@ -1,20 +1,22 @@
-import { computed, shallowRef } from "vue";
+import {computed, shallowRef, readonly} from "vue";
 
-import { browserWallets } from "@/browserWallets.ts";
-import { getWalletIdentifier, updateWalletConnectionInfo } from "@/walletUtils.ts";
-import { useProvider } from "@/provider.ts";
-import { SuiueProviderConfig } from "@/components/SuiueProvider.vue";
-import { WalletAccountNotFoundError, WalletNotConnectedError } from "@/errors.ts";
+import {browserWallets} from "@/browserWallets.ts";
+import {getWalletIdentifier, updateWalletConnectionInfo} from "@/walletUtils.ts";
+import {useProvider} from "@/provider.ts";
+import {SuiueProviderConfig} from "@/components/SuiueProvider.vue";
+import {WalletAccountNotFoundError, WalletNotConnectedError} from "@/errors.ts";
 
-import type { ReadonlyWalletAccount } from "@mysten/wallet-standard";
-import { BrowserWalletType } from "@/types.ts";
+import type {ReadonlyWalletAccount} from "@mysten/wallet-standard";
+import {BrowserWalletType} from "@/types.ts";
 
+type OnConnectCallbackType = (state?: ThisType<WalletState>) => void
 
 export class WalletState {
 
     private _config
     private _wallet
     private _accounts
+    private _onConnects
     public readonly wallet
     public readonly wallets
     public readonly account
@@ -25,11 +27,12 @@ export class WalletState {
         // wallet state 与 config 一起被注册，没有上下级关系所以无法被 inject，手动传入
         this._config = config
         this._wallet = shallowRef<BrowserWalletType>()
-        this.wallet = computed(() => this._wallet.value)
+        this.wallet = readonly(this._wallet)
         this._accounts = shallowRef<ReadonlyWalletAccount[]>([])
+        this._onConnects = [] as OnConnectCallbackType[]
         this.account = computed(() => this._accounts.value[0])
 
-        this.isConnected = computed(() => this._wallet.value)
+        this.isConnected = computed(() => !!this._wallet.value)
         this.address = computed(() => this.account.value?.address)
         // TODO: type WalletWithFeatures<MapStrArrayToFeaturesType<Exclude<typeof this._config.requiredFeatures, undefined>>>
         this.wallets = computed<BrowserWalletType[]>(() => {
@@ -58,6 +61,17 @@ export class WalletState {
             ] as BrowserWalletType[]
 
         })
+
+        // register event for all wallet
+        for (let wallet of this.wallets.value) {
+            wallet.features["standard:events"]?.on("change", (_) => {
+                // connect to same wallet
+                if (this.wallet.value && getWalletIdentifier(this.wallet.value) === getWalletIdentifier(this.wallet.value)) {
+                    // reconnect
+                    this.disconnect().then(() => this.connect(wallet))
+                }
+            })
+        }
     }
 
 
@@ -72,7 +86,17 @@ export class WalletState {
         }
     }
 
+    private handlerConnect() {
+        for (let cb of this._onConnects) {
+            new Promise(() => cb.apply(this, [this,]))
+        }
+    }
+
     public async connect(target: BrowserWalletType, preferredAddress?: string) {
+        if (this.isConnected) {
+            this.disconnect()
+        }
+
         let output = await target.features["standard:connect"].connect();
         if (output.accounts.length === 0) {
             throw new WalletAccountNotFoundError("connect failed: no account provide by wallet.")
@@ -92,10 +116,7 @@ export class WalletState {
             account_addr: this.address.value
         });
 
-        // listen to the change of the wallet
-        target.features["standard:events"].on("change", (input) => {
-            this.updateAccounts(target, input.accounts as ReadonlyWalletAccount[])
-        })
+        this.handlerConnect()
     }
 
     public async disconnect() {
@@ -105,7 +126,8 @@ export class WalletState {
 
         try {
             await (this._wallet.value.features["standard:disconnect"])?.disconnect()
-        } catch { }
+        } catch {
+        }
 
         this._wallet.value = undefined
         this._accounts.value = []
@@ -120,6 +142,25 @@ export class WalletState {
         if (!this.wallet.value) {
             throw new WalletNotConnectedError()
         }
+    }
+
+    /** set a call bcak when connect, call again to cancel 
+     * @example
+     * ```
+     * let cancel = wallet.onConnect((state) => {
+     *    useWalletQuery().objects.loadAll()
+     * })
+     * 
+     * // cancel the callback
+     * cancel()
+    */
+    public onConnect(cb: OnConnectCallbackType): () => void{
+        const cancel = () => {
+            this._onConnects.splice(this._onConnects.indexOf(cb), 1)
+        }
+
+        this._onConnects.push(cb)
+        return () => cancel.call(this)
     }
 
 }

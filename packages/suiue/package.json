@@ -1,6 +1,6 @@
 {
     "name": "@suifans/suiue",
-    "version": "0.1.0",
+    "version": "0.0.2-alpha",
     "author": "SuiFansCN",
     "license": "MIT",
     "keywords": [
@@ -13,14 +13,14 @@
         "type": "git",
         "url": "https://github.com/SuiFansCN/suiue.git"
     },
+    "bugs": "https://github.com/SuiFansCN/suiue/issues",
     "homepage": "https://github.com/SuiFansCN/suiue",
     "type": "module",
     "exports": {
         ".": {
             "import": "./lib/suiue.js",
-            "require": "./lib/suiue.cjs",
-            "node": "./lib/suiue.umd.cjs",
-            "types": "./lib/index.d.ts"
+            "require": "./lib/suiue.umd.cjs",
+            "types": "./lib/types/exports.d.ts"
         }
     },
     "scripts": {
@@ -37,11 +37,15 @@
         "package.json"
     ],
     "devDependencies": {
-        "happy-dom": "^12.10.3"
+        "@0no-co/graphqlsp": "^1.10.3",
+        "happy-dom": "^12.10.3",
+        "typescript": "^5.4.5",
+        "vite-plugin-chunk-split": "^0.5.0"
     },
     "dependencies": {
         "@mysten/sui.js": "^0.51.2",
         "@mysten/wallet-standard": "^0.11.2",
+        "gql.tada": "^1.5.5",
         "vue": "^3.4.21"
     }
 }

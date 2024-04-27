@@ -1,5 +1,7 @@
+import { ref, computed } from "vue"
+import type { Ref, WritableComputedRef } from "vue"
 
-export function forceBindThis<T extends Object>(obj: T): T{
+export function forceBindThis<T extends Object>(obj: T): T {
     // 强制将 this 绑定到 obj 上，使得即使被解构调用，this 也指向 obj
     return new Proxy<T>(obj, {
         get(target, p, receiver) {

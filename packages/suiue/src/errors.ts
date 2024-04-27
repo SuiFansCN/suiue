@@ -26,6 +26,12 @@ export class ProviderAlreadyExistsError extends Error {
     message = `suiue: provider already exists, if you want use by multiply, please pass different id in config`
 }
 
+export class RequestError extends Error {
+    constructor(message: any) {
+        super(`suiue-request-error: ${message}`)
+    }    
+}
+
 
 /*
     ========= dev-kit internal =========

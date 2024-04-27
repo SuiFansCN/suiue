@@ -1,27 +1,31 @@
 <template>
-    <slot/>
+
+    <slot />
+
 </template>
 
 <script setup lang="ts">
-import {computed} from "vue";
-import {SuiClient, getFullnodeUrl} from "@mysten/sui.js/client"
+import { computed } from "vue";
+import { SuiClient, getFullnodeUrl } from "@mysten/sui.js/client"
+import { SuiGraphQLClient } from "@mysten/sui.js/graphql"
 
-import {setProvider, useProvider} from "@/provider.ts";
-import {forceBindThis} from "@/utils.ts";
-import {WalletState} from "@/context/walletState.ts";
-import {WalletQuery} from "@/context/walletQuery.ts";
-import {WalletActions} from "@/context/walletActions.ts";
-import {getWalletConnectionInfo, getWalletIdentifier} from "@/walletUtils.ts";
-import {ProviderAlreadyExistsError} from "@/errors.ts"
+import { setProvider, useProvider } from "@/provider.ts";
+import { forceBindThis } from "@/utils.ts";
+import { WalletState } from "@/context/walletState.ts";
+import { WalletQuery } from "@/context/walletQuery";
+import { WalletActions } from "@/context/walletActions.ts";
+import { getWalletConnectionInfo, getWalletIdentifier } from "@/walletUtils.ts";
+import { ProviderAlreadyExistsError } from "@/errors.ts"
 
-import type {Wallet, WalletWithSuiFeatures} from "@mysten/wallet-standard";
-import type {AutoConnectType, SuiNetworksType} from "@/types.ts";
+import type { Wallet, WalletWithSuiFeatures } from "@mysten/wallet-standard";
+import type { AutoConnectType, SuiNetworksType } from "@/types.ts";
 
 export type SuiueProviderConfig = {
     id?: string,
     autoConnect?: AutoConnectType,
     network?: SuiNetworksType,
     suiClient?: SuiClient,
+    suiClientQL?: SuiGraphQLClient<any>,
     preferredWallets?: string[],
     requiredFeatures?: (keyof WalletWithSuiFeatures["features"])[]
     walletFilter?: (wallet: Wallet) => boolean
@@ -48,8 +52,12 @@ const props = defineProps({
                 config.network = "mainnet"
             }
 
+            if (!config.suiClientQL) {
+                config.suiClientQL = new SuiGraphQLClient({ url: `https://sui-${config.network}}.mystenlabs.com/` })
+            }
+
             if (!config.suiClient) {
-                config.suiClient = new SuiClient({url: getFullnodeUrl(config.network)})
+                config.suiClient = new SuiClient({ url: getFullnodeUrl(config.network) })
             }
 
             if (!config.preferredWallets) {
@@ -77,21 +85,39 @@ const props = defineProps({
 
             return true
         },
-    }
+    },
+    state: {
+        type: Object as () => WalletState,
+    },
+    query: {
+        type: Object as () => WalletQuery,
+    },
+    actions: {
+        type: Object as () => WalletActions,
+    },
 })
 
-if (useProvider("PROVIDERS").includes(props.config.id!)){
+const emit = defineEmits(["update:state", "update:query", "update:actions"])
+
+if (useProvider("PROVIDERS").includes(props.config.id!)) {
     throw new ProviderAlreadyExistsError()
 }
 
 const walletState = forceBindThis(new WalletState(props.config))
+const walletQuery = forceBindThis(new WalletQuery(props.config, walletState))
+const walletActions = forceBindThis(new WalletActions(props.config, walletQuery, walletState))
 
 // do not mix up this order
 setProvider("PROVIDER", props.config.id!)
 setProvider("PROVIDER_CONFIG", props.config)
 setProvider("WALLET_STATE", walletState)
-setProvider("WALLET_QUERY", forceBindThis(new WalletQuery(props.config.suiClient!, walletState)))
-setProvider("WALLET_ACTIONS", forceBindThis(new WalletActions(props.config, walletState)))
+setProvider("WALLET_QUERY", walletQuery)
+setProvider("WALLET_ACTIONS", walletActions)
+
+emit("update:state", walletState)
+emit("update:query", walletQuery)
+emit("update:actions", walletActions)
+
 
 const autoConnectCmp = computed(async () => {
     /* use computed to wait target wallet mount, and stop when success */

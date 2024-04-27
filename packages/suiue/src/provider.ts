@@ -3,7 +3,7 @@ import { inject, provide } from "vue";
 import type { SuiueProviderConfig } from "@/components/SuiueProvider.vue";
 import type { WalletState } from "@/context/walletState.ts";
 import type { WalletActions } from "@/context/walletActions.ts";
-import type { WalletQuery } from "@/context/walletQuery.ts";
+import type { WalletQuery } from "@/context/walletQuery";
 import { ProviderNotExistsError } from "@/errors.ts";
 
 export const PROVIDER_MAP = {

@@ -6,16 +6,19 @@ import type { SuiTransactionBlockResponseOptions, ExecuteTransactionRequestType 
 import type { TransactionBlock } from "@mysten/sui.js/transactions"
 import type { WalletState } from "@/context/walletState.ts";
 import { SuiueProviderConfig } from "@/components/SuiueProvider.vue";
+import { WalletQuery } from "./walletQuery";
 
 
 export class WalletActions {
     private state
     private config
+    private query
     public readonly features
 
-    constructor(config: SuiueProviderConfig, state: WalletState) {
+    constructor(config: SuiueProviderConfig, query: WalletQuery, state: WalletState) {
         this.config = config
         this.state = state
+        this.query = query
         this.features = config.requiredFeatures!
     }
 
@@ -67,6 +70,18 @@ export class WalletActions {
             account: this.state.account.value,
         })
     }
+
+    // public async getSpecifyCoinBalance(coinType: string, amt: number) {
+
+    // }
+
+    // public async transferCoin(){
+
+    // }
+
+    // public async transferSui(){
+
+    // }
 
 
 

@@ -23,19 +23,26 @@
         "noFallthroughCasesInSwitch": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/*"],
+            "@/*": [
+                "./src/*"
+            ],
         },
         "declaration": true,
         "outDir": "./lib/types",
+        "plugins": [
+            {
+                "name": "@0no-co/graphqlsp",
+                "schema": "./src/context/walletQuery/graphql/current_progress_schema.graphql",
+                "tadaOutputLocation": "src/context/walletQuery/graphql/graphql-env.d.ts",
+                "trackFieldUsage": false,
+				"shouldCheckForColocatedFragments": false,
+            }
+        ]
     },
     "include": [
         "src/**/*.ts",
+        "src/**/*.d.ts",
         "src/**/*.vue",
         "src/**/*.tsx",
     ],
-    "references": [
-        {
-            "path": "./tsconfig.node.json"
-        }
-    ]
 }

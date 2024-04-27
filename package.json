@@ -1,6 +1,6 @@
 {
     "name": "@suifans/suiue-monorepo",
-    "version": "0.0.0",
+    "version": "0.0.2",
     "private": true,
     "author": "SuiFansCN",
     "license": "MIT",
@@ -23,9 +23,10 @@
         "preview": "pnpm run --filter @suifans/suiue vite preview"
     },
     "dependencies": {
-        "vue": "^3.4.21"
+        
     },
     "devDependencies": {
+        "vue": "^3.4.21",
         "@types/node": "^20.12.7",
         "@vitejs/plugin-vue": "^4.6.2",
         "@vue/test-utils": "2.4.0-alpha.2",
