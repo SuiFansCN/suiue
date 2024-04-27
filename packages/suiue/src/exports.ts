@@ -17,5 +17,4 @@ export type {
     WalletObject
 } from "@/types.ts"
 
-export { loadCoins } from "@/context/walletQuery/graphql"
 

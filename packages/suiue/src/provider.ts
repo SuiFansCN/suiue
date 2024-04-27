@@ -11,7 +11,7 @@ export const PROVIDER_MAP = {
 
     // provide when SuiueProvider.vue created.
     "PROVIDER": () => "" as string,
-    "PROVIDER_CONFIG": () => Object as SuiueProviderConfig,
+    "PROVIDER_CONFIG": () => { return {} as SuiueProviderConfig},
     "WALLET_STATE": () => { return {} as WalletState },
     "WALLET_ACTIONS": () => { return {} as WalletActions },
     "WALLET_QUERY": () => { return {} as WalletQuery },

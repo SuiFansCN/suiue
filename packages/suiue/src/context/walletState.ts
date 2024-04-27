@@ -1,4 +1,4 @@
-import {computed, shallowRef, readonly} from "vue";
+import {computed, shallowRef} from "vue";
 
 import {browserWallets} from "@/browserWallets.ts";
 import {getWalletIdentifier, updateWalletConnectionInfo} from "@/walletUtils.ts";
@@ -27,7 +27,7 @@ export class WalletState {
         // wallet state 与 config 一起被注册，没有上下级关系所以无法被 inject，手动传入
         this._config = config
         this._wallet = shallowRef<BrowserWalletType>()
-        this.wallet = readonly(this._wallet)
+        this.wallet = computed(() => this._wallet.value)
         this._accounts = shallowRef<ReadonlyWalletAccount[]>([])
         this._onConnects = [] as OnConnectCallbackType[]
         this.account = computed(() => this._accounts.value[0])
@@ -88,7 +88,7 @@ export class WalletState {
 
     private handlerConnect() {
         for (let cb of this._onConnects) {
-            new Promise(() => cb.apply(this, [this,]))
+            new Promise(() => cb(this))
         }
     }
 

@@ -1,144 +1,218 @@
-// import {computed} from "vue";
-import { computed, ref, watch } from "vue";
+import {computed, reactive, readonly, ref, watch} from "vue";
 
-import { useProvider } from "@/provider.ts";
+import {useProvider} from "@/provider.ts";
+import {loadObjects, loadBalance, loadAllBalance} from "./graphql"
 
-import { AssertManager } from "@/context/walletQuery/assertManager.ts";
-import { forceBindThis } from "@/utils";
 
-import type { ComputedRef, Ref, UnwrapRef } from "vue";
-import type { WalletState } from "@/context/walletState.ts";
-import type { SuiTypeIdentifier, WalletBalance } from "@/types";
-import type { SuiueProviderConfig } from "@/components/SuiueProvider.vue";
-
-interface AsyncComputedWithRef<T> extends ComputedRef<T> {
-    refer: Ref<T>
-}
-
-function asyncComputed<T>(
-    computedAdditional: Ref | ComputedRef,
-    fetcher: (data: Ref<UnwrapRef<T>>) => Promise<T | undefined>,
-    data?: T,
-) {
-    /*
-    * 如果直接将 computed 定义为 computed(async () => {}), 那么 template 中显示将会出现问题
-    * 这里先创建一个 ref，然后调用 fetcher 异步更新 ref 的值，再通过 computed 返回 ref 的值
-    *
-    * computedAdditional: 依赖于这个 computed 的值，当这个值改变时，重新调用 fetcher 更新 ref
-    * */
-    let refer = ref<T>(data as T)
-
-    const comp = computed(() => {
-        // computedAdditional.value;
-        return refer.value
-    }) as AsyncComputedWithRef<T>
-
-    comp.refer = refer as Ref<T>
-
-    function updateRefer() {
-        fetcher(refer).then((output) => {
-            refer.value = output as UnwrapRef<T>
-        })
-    }
-
-    // 依赖改变时更新
-    watch(computedAdditional, updateRefer, { immediate: true })
-    return comp
-}
+import type {Ref} from "vue";
+import type {SuiClient} from "@mysten/sui.js/client";
+import type {WalletState} from "@/context/walletState.ts";
+import type {SuiueProviderConfig} from "@/components/SuiueProvider.vue";
+import type {SuiTypeIdentifier} from "@/types.ts";
+import {BalanceStruct, CoinObjectStruct, defaultBalanceStruct, ObjectStruct} from "@/context/walletQuery/types.ts";
+import {assignDataToObj} from "@/context/walletQuery/utils.ts";
 
 export class WalletQuery {
     // TODO: subscribe to account changes
 
-    private state
-    private coins
-    // coins.load()
-    // coins.loadAll()
+    readonly #state
+
+    readonly #balances
+    readonly #objects
+    // undefined if not resolved, null if not exist
+    readonly #domain: Ref<string | null | undefined>
 
     public readonly client
     public readonly clientQL
-    public readonly domain
+    public readonly balances
+    public readonly objects
+    public readonly coins
     public readonly suiBalance
     public readonly suiCoins
-    public readonly coins
-    public readonly objects
 
     constructor(config: SuiueProviderConfig, state: WalletState) {
         this.client = config.suiClient as Omit<SuiClient, "executeTransactionBlock" | "signAndExecuteTransactionBlock">
-        this.clientQL = config.suiClientQL
-        this.state = state
-        this.coins = forceBindThis(new AssertManager<WalletBalance>({
-            resetRefer: this.state.isConnected,
-            default: () => {return{
-               type: "" as SuiTypeIdentifier,
-               coinObjectCount: 0,
-               totalBalance: BigInt(0) 
-            }},
-            async loader(keys) {
+        this.clientQL = config.suiClientQL!
+        this.#state = state
+        this.#domain = ref<string | null | undefined>(undefined)
 
-            },
-            async getAllLoader() {
+        this.#balances = reactive<Record<SuiTypeIdentifier, BalanceStruct>>({})
+        this.#objects = reactive<Record<SuiTypeIdentifier, ObjectStruct[]>>({})
 
+        this.balances = readonly(this.#balances)
+        this.objects = readonly(this.#objects)
+
+        this.suiBalance = computed(() =>
+            this.#balances["0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI"] as BalanceStruct | undefined
+        )
+
+
+        this.suiCoins = computed(() =>
+                this.coins.value["0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI"] as CoinObjectStruct[] | undefined
+            // this.#objects["0x0000000000000000000000000000000000000000000000000000000000000002::coin::Coin<>"]
+        )
+
+
+        this.coins = computed(() => {
+            // filter coins in objects
+            // start with 0x2::coin::Coin
+
+            return Object.keys(this.#objects)
+                .filter(key => key.indexOf("2::coin::Coin<"))
+                .reduce((result, key) => {
+                    let coinType = key.substring(key.indexOf("<") + 1, key.indexOf(">")) as SuiTypeIdentifier
+                    result[coinType] = this.#objects[key as SuiTypeIdentifier] as CoinObjectStruct[];
+                    return result;
+                }, {} as Record<SuiTypeIdentifier, CoinObjectStruct[]>)
+
+
+        })
+
+
+        // on account change, reset
+        watch(this.#state.isConnected, (value) => {
+            if (value) {
+                // on connect
+                this.loadBalance("0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI")
+                this.loadCoins("0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI")
+            } else {
+                this.reset()
             }
-        }))
-        this.suiBalance = asyncComputed(
-            this.state.address,
-            async (_) => BigInt((await this.getSpecifyCoinBalance("0x2::sui::SUI"))?.totalBalance ?? 0),
-            BigInt(0)
-        )
 
-        this.suiCoins = asyncComputed<CoinStruct[]>(
-            this.state.address,
-            async (_) => (await this.getSpecifyCoins("0x2::sui::SUI"))?.data!,
-            []
-        )
+        })
 
-        this.domain = asyncComputed<string>(
-            this.state.address,
-            async (_) => {
-                try {
-                    return (await this.client.resolveNameServiceNames({ address: this.state.address.value })).data[0] ?? undefined
-                } catch {
-                    return undefined
+
+    }
+
+    private reset() {
+
+        function emptyObj(obj: any) {
+            for (let key in obj) {
+                delete obj[key]
+            }
+        }
+
+        this.#domain.value = undefined
+        emptyObj(this.#balances)
+        emptyObj(this.#objects)
+    }
+
+    public get domain() {
+        // lazy load domain
+        if (this.#domain.value === undefined) {
+            // fetch domain
+            this.client.resolveNameServiceNames({
+                address: this.#state.address.value
+            }).then(({data}) => {
+                if (data && data[0]) {
+                    this.#domain.value = data[0]
+                } else {
+                    this.#domain.value = null
                 }
-            },
-            undefined
-        )
-
-
-
-        // this.suiCoins = this.initSuiCoins()
-
-        // this.coins = computed(async () => {
-        //     (await this.client.getCoins({
-        //         owner: this.state.address.value
-        //     })).data[0].
-        // })
-    }
-
-    public async getSpecifyCoins(coinType: string, cursor?: string, limit?: number) {
-        if (!this.state.address.value) {
-            return undefined
+            })
         }
 
-        return await this.client.getCoins({
-            owner: this.state.address.value,
-            coinType,
-            cursor,
-            limit
-        })
+        return readonly(this.#domain)
     }
 
-    public async getSpecifyCoinBalance(coinType: string) {
-        if (!this.state.address.value) {
-            return
+    public async loadBalance(coinTypes_: SuiTypeIdentifier | SuiTypeIdentifier[]) {
+
+        let coinTypes: SuiTypeIdentifier[]
+
+        if (typeof coinTypes_ as string === "string") {
+            coinTypes = [coinTypes_ as SuiTypeIdentifier,] as SuiTypeIdentifier[]
+        } else {
+            coinTypes = coinTypes_ as SuiTypeIdentifier[]
         }
 
-        return await this.client.getBalance({
-            owner: this.state.address.value,
-            coinType
+        // create default balance struct
+        coinTypes.forEach((coinType) => {
+            this.#balances[coinType] = defaultBalanceStruct(coinType)
         })
+
+        const result = {} as Record<SuiTypeIdentifier, BalanceStruct>
+
+        for (let coinType of coinTypes) {
+            const balance = await loadBalance(coinType)
+            this.#balances[coinType] = balance
+            result[coinType] = balance
+        }
+
+        return result
     }
+
+    public async loadAllBalance() {
+
+        const allBalances = await loadAllBalance()
+
+        Object.assign(this.#balances, allBalances)
+
+        return allBalances
+    }
+
+    public async loadObjects(objTypes_: SuiTypeIdentifier | SuiTypeIdentifier[] | "$all") {
+        let objTypes: SuiTypeIdentifier[]
+        if (typeof objTypes_ as string === "string") {
+            objTypes = [objTypes_ as SuiTypeIdentifier,] as SuiTypeIdentifier[]
+        } else {
+            objTypes = objTypes_ as SuiTypeIdentifier[]
+        }
+
+
+        if (objTypes_ !== "$all") {
+            // set default empty array
+            objTypes.forEach((objType) => {
+                this.#objects[objType] = []
+            })
+        }
+
+
+        const result = {} as Record<SuiTypeIdentifier, ObjectStruct[]>
+        for (let objType of objTypes) {
+            const records = await loadObjects(objType)
+
+            if (Object.keys(records).length === 0) {
+                continue
+            }
+
+            assignDataToObj(this.#objects, records)
+            assignDataToObj(result, records)
+        }
+
+        return result
+    }
+
+    public async loadAllObjects() {
+        return await this.loadObjects("$all")
+    }
+
+    public async loadCoins(coinTypes_: SuiTypeIdentifier | SuiTypeIdentifier[]) {
+        let coinTypes: SuiTypeIdentifier[]
+
+        if (typeof coinTypes_ as string === "string") {
+            coinTypes = [coinTypes_ as SuiTypeIdentifier,] as SuiTypeIdentifier[]
+        } else {
+            coinTypes = coinTypes_ as SuiTypeIdentifier[]
+        }
+
+        coinTypes = coinTypes.map(
+            coinType =>
+                `0x0000000000000000000000000000000000000000000000000000000000000002::coin::Coin<${coinType}>`
+        ) as SuiTypeIdentifier[]
+
+        return await this.loadObjects(
+            coinTypes
+        ) as Record<SuiTypeIdentifier, CoinObjectStruct[]>
+    }
+
+    public async loadAllCoins() {
+        return await this.loadObjects(
+            ["0x0000000000000000000000000000000000000000000000000000000000000002::coin::Coin"]
+        ) as Record<SuiTypeIdentifier, CoinObjectStruct[]>
+    }
+
 
 }
+
 
 export const useWalletQuery = () => useProvider("WALLET_QUERY")
