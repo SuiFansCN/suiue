@@ -3,10 +3,10 @@ import type {SuiTypeIdentifier} from "@/types.ts";
 export type BalanceStruct = {
     type: SuiTypeIdentifier,
     coinObjectCount: number
-    totalBalance: BigInt
+    totalBalance: string
 }
 
-export type ObjectStruct = {
+export interface ObjectStruct {
     type: SuiTypeIdentifier,
     id: string,
     digest: string,
@@ -18,12 +18,12 @@ export type ObjectStruct = {
     }
 }
 
-export type CoinObjectStruct = ObjectStruct & {
+export interface CoinObjectStruct extends ObjectStruct{
     contents: {
         id: string,
         balance: {
             id: string,
-            value: BigInt,
+            value: string,
         }
     }
 }
@@ -31,7 +31,7 @@ export type CoinObjectStruct = ObjectStruct & {
 export function defaultBalanceStruct(type: SuiTypeIdentifier): BalanceStruct {
     return {
         type,
-        totalBalance: BigInt(0),
+        totalBalance: "0",
         coinObjectCount: 0
     }
 }

@@ -6,7 +6,8 @@
     </ul>
     <div>{{ address }}</div>
     <div>{{ suiBalance }}</div>
-    <div>{{ query.domain ?? 'no domain' }}</div>
+    <div>{{ domain ?? 'no domain' }}</div>
+
     <ul v-if="suiCoins">
         <li v-for="coin in suiCoins" :key="coin.id">
             {{ coin.type }}: {{ coin.contents.balance.value }}
@@ -14,20 +15,19 @@
     </ul>
     <div><button v-if="isConnected" @click="walletState.disconnect">disconnect</button></div>
     <div><button @click="console.log(actions.signPersonalMessage('hello world'))">sign Message</button></div>
-
 </template>
 
 <script setup lang="ts">
 
-import {onMounted,} from "vue";
-// import { TransactionBlock } from "@mysten/sui.js/transactions"
+import {onMounted} from "vue";
 import { useWalletState, useWalletActions, useWalletQuery } from "@suifans/suiue";
 
 const walletState = useWalletState()
 const actions = useWalletActions()
 const query = useWalletQuery()
 const { address, isConnected } = walletState
-const { suiCoins, suiBalance } = query
+const { suiCoins, suiBalance, coins, domain } = query
+
 
 onMounted( () => {
 

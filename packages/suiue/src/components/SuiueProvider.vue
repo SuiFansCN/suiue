@@ -56,7 +56,7 @@ const props = defineProps({
             }
 
             if (!config.suiClientQL) {
-                config.suiClientQL = new SuiGraphQLClient({url: `https://sui-${config.network}}.mystenlabs.com/`})
+                config.suiClientQL = new SuiGraphQLClient({url: `https://sui-${config.network}.mystenlabs.com/`})
             }
 
             if (!config.suiClient) {
@@ -116,7 +116,7 @@ if (useProvider("PROVIDERS").includes(props.config.id!)) {
 }
 
 const walletState = forceBindThis(new WalletState(props.config as SuiueProviderConfig))
-const walletQuery = forceBindThis(new WalletQuery(props.config as SuiueProviderConfig, walletState), ["domain"])
+const walletQuery = forceBindThis(new WalletQuery(props.config as SuiueProviderConfig, walletState))
 const walletActions = forceBindThis(new WalletActions(props.config as SuiueProviderConfig, walletQuery, walletState))
 
 // do not mix up this order
