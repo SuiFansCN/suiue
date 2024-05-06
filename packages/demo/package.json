@@ -31,6 +31,10 @@
         "gql.tada": "^1.5.5"
     },
     "devDependencies": {
-        "ts-node": "^10.9.2"
+        "naive-ui": "^2.38.1",
+        "ts-node": "^10.9.2",
+        "unplugin-auto-import": "^0.17.5",
+        "unplugin-vue-components": "^0.26.0",
+        "vfonts": "^0.0.3"
     }
 }

@@ -13,6 +13,7 @@ type OnConnectCallbackType = (state?: ThisType<WalletState>) => void
 
 export class WalletState {
 
+    private _cancelListen: (() => void) | undefined
     private _config
     private _wallet
     private _accounts
@@ -30,6 +31,7 @@ export class WalletState {
         this.wallet = computed(() => this._wallet.value)
         this._accounts = shallowRef<ReadonlyWalletAccount[]>([])
         this._onConnects = [] as OnConnectCallbackType[]
+        this._cancelListen = undefined
         this.account = computed(() => this._accounts.value[0])
 
         this.isConnected = computed(() => !!this._wallet.value)
@@ -62,16 +64,6 @@ export class WalletState {
 
         })
 
-        // register event for all wallet
-        for (let wallet of this.wallets.value) {
-            wallet.features["standard:events"]?.on("change", (_) => {
-                // connect to same wallet
-                if (this.wallet.value && getWalletIdentifier(this.wallet.value) === getWalletIdentifier(this.wallet.value)) {
-                    // reconnect
-                    this.disconnect().then(() => this.connect(wallet))
-                }
-            })
-        }
     }
 
 
@@ -86,18 +78,19 @@ export class WalletState {
         }
     }
 
-    private handlerConnect() {
-        for (let cb of this._onConnects) {
-            new Promise(() => cb(this))
-        }
+    private async handlerConnect() {
+        await Promise.all(
+            this._onConnects.map((cb) => new Promise(() => cb(this)))
+        )
     }
 
     public async connect(target: BrowserWalletType, preferredAddress?: string) {
         if (this.isConnected) {
-            this.disconnect()
+            await this.disconnect()
         }
 
         let output = await target.features["standard:connect"].connect();
+
         if (output.accounts.length === 0) {
             throw new WalletAccountNotFoundError("connect failed: no account provide by wallet.")
         }
@@ -116,7 +109,31 @@ export class WalletState {
             account_addr: this.address.value
         });
 
-        this.handlerConnect()
+        // register event listener
+        this._cancelListen = target.features["standard:events"]?.on("change", async (event) => {
+            // is current wallet
+            if (this.wallet.value && getWalletIdentifier(this.wallet.value) !== getWalletIdentifier(this.wallet.value)) {
+                return
+            }
+
+            // wallet address change?
+            if (
+                JSON.stringify(event.accounts?.map((account) => account.address)) !==
+                JSON.stringify(this._accounts.value.map((account) => account.address))
+            ) {
+                if (event.accounts?.length === 0) {
+                    // disconnect
+                    await this.disconnect()
+                } else {
+                    // account change, update accounts
+                    this.updateAccounts(target, event.accounts as any[])
+                }
+            }
+
+        })
+
+        await this.handlerConnect()
+        
     }
 
     public async disconnect() {
@@ -136,6 +153,11 @@ export class WalletState {
             wallet_ident: null,
             account_addr: null
         })
+
+        if (this._cancelListen) {
+            this._cancelListen()
+            this._cancelListen = undefined
+        }
     }
 
     public checkConnected() {
@@ -144,17 +166,17 @@ export class WalletState {
         }
     }
 
-    /** set a call bcak when connect, call again to cancel 
+    /** set a call bcak when connect, call again to cancel
      * @example
      * ```
      * let cancel = wallet.onConnect((state) => {
      *    useWalletQuery().objects.loadAll()
      * })
-     * 
+     *
      * // cancel the callback
      * cancel()
-    */
-    public onConnect(cb: OnConnectCallbackType): () => void{
+     */
+    public onConnect(cb: OnConnectCallbackType): () => void {
         const cancel = () => {
             this._onConnects.splice(this._onConnects.indexOf(cb), 1)
         }

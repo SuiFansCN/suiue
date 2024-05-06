@@ -1,12 +1,14 @@
-import { useProvider } from "@/provider.ts";
+import {useProvider} from "@/provider.ts";
+import {SuiueProviderConfig} from "@/components/SuiueProvider.vue";
+import {WalletQuery} from "./walletQuery";
+import {SuiTypeIdentifier} from "@/types.ts";
+import {FeatureNotSupportedError, InsufficientBalanceError} from "@/errors.ts";
+import {TransactionBlock} from "@mysten/sui.js/transactions";
 
-import { FeatureNotSupportedError } from "@/errors.ts";
 
-import type { SuiTransactionBlockResponseOptions, ExecuteTransactionRequestType } from "@mysten/sui.js/client"
-import type { TransactionBlock } from "@mysten/sui.js/transactions"
-import type { WalletState } from "@/context/walletState.ts";
-import { SuiueProviderConfig } from "@/components/SuiueProvider.vue";
-import { WalletQuery } from "./walletQuery";
+import type {ExecuteTransactionRequestType, SuiTransactionBlockResponseOptions} from "@mysten/sui.js/client"
+import type {WalletState} from "@/context/walletState.ts";
+import {consts} from "@/consts.ts";
 
 
 export class WalletActions {
@@ -71,18 +73,49 @@ export class WalletActions {
         })
     }
 
-    // public async getSpecifyCoinBalance(coinType: string, amt: number) {
+    public async getExactlyCoinAmount(
+        options: {
+            txb: TransactionBlock,
+            coinType: SuiTypeIdentifier,
+            amt: bigint | string | number
+        }
+    ) {
+        let {txb, coinType, amt} = options
+        let isSUI = coinType === consts.COIN_SUI || coinType === "0x2::sui::SUI"
 
-    // }
 
-    // public async transferCoin(){
+        if (typeof amt === "string" || typeof amt === "number") {
+            amt = BigInt(amt)
+        }
 
-    // }
+        const balance = this.query.balances[coinType] ?? await this.query.loadBalance(coinType)
 
-    // public async transferSui(){
+        if (BigInt(balance.totalBalance) < amt) {
+            throw new InsufficientBalanceError()
+        }
 
-    // }
+        const coins = this.query.coins.value[coinType] ?? await this.query.loadCoins(coinType)
 
+        if (coins.length === 0) {
+            throw new Error("unexpected error: no coin found for the specified coin type")
+        }
+
+        if (isSUI){
+            return txb.splitCoins(txb.gas, [amt])
+        }
+
+        // other coin
+        // step1: merge all coin
+        // step2: split to exact amount
+        let [primaryCoin, ...mergedCoin] = coins.map(coin => txb.object(coin.id))
+
+        if (mergedCoin.length) {
+            txb.mergeCoins(primaryCoin, mergedCoin)
+        }
+
+        return txb.splitCoins(primaryCoin, [amt])
+
+    }
 
 
 }

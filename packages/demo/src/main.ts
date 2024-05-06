@@ -5,10 +5,15 @@ import App from './ProviderWrapper.vue'
 import { createSuiue } from "@suifans/suiue";
 import {getWallets, WalletWithRequiredFeatures} from "@mysten/wallet-standard";
 
+// vfonts
+import 'vfonts/Lato.css'
+import naive from "naive-ui"
+
 
 
 const app = createApp(App)
 app.use(createSuiue())
+app.use(naive)
 app.mount('#app')
 
 document.addEventListener("DOMContentLoaded", () => {

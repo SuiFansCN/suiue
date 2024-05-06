@@ -23,8 +23,10 @@ export default defineConfig({
         // })
     ],
     test: {
-        environment: "happy-dom",
-        include: ["tests/**"],
+        environment: "jsdom",
+        include: ["src/**/**.test.ts"],
+        globals: true,
+        // globalSetup
     },
     build: {
         minify: false,

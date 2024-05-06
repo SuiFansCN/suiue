@@ -39,7 +39,9 @@
     "devDependencies": {
         "@0no-co/graphqlsp": "^1.10.3",
         "happy-dom": "^12.10.3",
+        "naive-ui": "^2.38.1",
         "typescript": "^5.4.5",
+        "vfonts": "^0.0.3",
         "vite-plugin-chunk-split": "^0.5.0"
     },
     "dependencies": {

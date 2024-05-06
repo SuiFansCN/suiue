@@ -4,29 +4,35 @@
 
 /*
     ========= wallet-functions  =========
- */
+*/
 
-export class FeatureNotSupportedError extends Error {
+class SuiueError extends Error {}
+
+export class FeatureNotSupportedError extends SuiueError {
     message = `suiue: feature not supported by wallet, did you forget to set requiredFeatures in SuiueProvider.vue ?`
 }
 
-export class WalletNotConnectedError extends Error {
-    message = "wallet not connected, please connect wallet first."
+export class WalletNotConnectedError extends SuiueError {
+    message = "suiue: wallet not connected, please connect wallet first."
 }
 
-export class WalletAccountNotFoundError extends Error {}
-
-export class WalletError extends Error {}
-
-export class ProviderNotExistsError extends Error {
-    message = `suiue: provider not exists, do you forget to wrap your component with <SuiueProvider> ?`
+export class WalletAccountNotFoundError extends SuiueError {
+    message = `suiue: wallet account not found, please connect wallet first.`
 }
 
-export class ProviderAlreadyExistsError extends Error {
+export class ProviderNotExistsError extends SuiueError {
+    message = "suiue: provider not exists, do you forget to wrap your component with <SuiueProvider> ?"
+}
+
+export class ProviderAlreadyExistsError extends SuiueError {
     message = `suiue: provider already exists, if you want use by multiply, please pass different id in config`
 }
 
-export class RequestError extends Error {
+export class InsufficientBalanceError extends SuiueError {
+    message = `suiue: insufficient balance`
+}
+
+export class RequestError extends SuiueError {
     constructor(message: any) {
         super(`suiue-request-error: ${message}`)
     }    
@@ -37,6 +43,6 @@ export class RequestError extends Error {
     ========= dev-kit internal =========
  */
 
-export class PluginNotInstallError extends Error {}
+export class PluginNotInstallError extends SuiueError {}
 
 

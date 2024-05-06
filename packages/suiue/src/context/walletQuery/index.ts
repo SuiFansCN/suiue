@@ -59,7 +59,7 @@ export class WalletQuery {
         // this.objects = readonly(this.objects)
 
         this.suiBalance = computed(() =>
-            this.balances["0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI"] as BalanceStruct | undefined
+            this.balances["0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI"]?.totalBalance
         )
 
 

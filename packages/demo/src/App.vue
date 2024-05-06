@@ -1,37 +1,74 @@
-<template>
-    <ul>
-        <li v-for="wallet in walletState?.wallets.value" :key="wallet.name" @click="walletState.connect(wallet)">
-            {{ wallet.name }}
-        </li>
-    </ul>
-    <div>{{ address }}</div>
-    <div>{{ suiBalance }}</div>
-    <div>{{ domain ?? 'no domain' }}</div>
-
-    <ul v-if="suiCoins">
-        <li v-for="coin in suiCoins" :key="coin.id">
-            {{ coin.type }}: {{ coin.contents.balance.value }}
-        </li>
-    </ul>
-    <div><button v-if="isConnected" @click="walletState.disconnect">disconnect</button></div>
-    <div><button @click="console.log(actions.signPersonalMessage('hello world'))">sign Message</button></div>
-</template>
-
 <script setup lang="ts">
-
-import {onMounted} from "vue";
-import { useWalletState, useWalletActions, useWalletQuery } from "@suifans/suiue";
-
-const walletState = useWalletState()
-const actions = useWalletActions()
-const query = useWalletQuery()
-const { address, isConnected } = walletState
-const { suiCoins, suiBalance, coins, domain } = query
+import SuiIcon from "@/views/suiIcon.vue";
+import { NConnectButton } from "@suifans/suiue"
+import Content from "@/views/content.vue";
+import { useWalletState, useWalletQuery } from "@suifans/suiue";
 
 
-onMounted( () => {
+const { isConnected, onConnect } = useWalletState()
+const { loadAllBalance, loadAllObjects, loadAllCoins } = useWalletQuery()
 
+onConnect(() => {
+    loadAllBalance()
+    loadAllObjects()
+    loadAllCoins()
 })
 
-
 </script>
+
+<template>
+    <n-layout>
+        <n-layout-header bordered style="width: 100%; padding: 14px">
+            <n-page-header title="Suiue Demo">
+
+                <template #avatar><sui-icon/></template>
+                <template #extra><n-connect-button/></template>
+            </n-page-header>
+
+        </n-layout-header>
+
+        <n-layout bordered position="absolute" content-style="padding: 16px" style="top: 64px; width: 100%">
+            <template v-if="isConnected">
+                <content />
+            </template>
+            <template v-else>
+                <n-flex style="width: 100%; padding-top: 128px" align="center" justify="center">
+                    <n-spin size="large" />
+                </n-flex>
+            </template>
+        </n-layout>
+
+    </n-layout>
+
+</template>
+
+<style scoped>
+
+.n-layout {
+    width: 40vw;
+    min-width: 480px;
+    max-width: 680px;
+    height: 85vh;
+    border-radius: 15px;
+    box-sizing: content-box;
+}
+
+</style>
+
+<style>
+
+#app{
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(45deg, #CFDEF3, #E0EAFC);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+</style>
+
+

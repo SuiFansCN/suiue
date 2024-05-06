@@ -25,7 +25,7 @@ export function assignDataToObj<T extends Record<any, any | any[]>>(to: T, from:
 
 export function mapDisplayArrayToObject(display?: { key: string, value: string | null }[] | null) {
     if (!display) {
-        return {}
+        return null
     }
 
     return display.reduce((acc, cur) => {

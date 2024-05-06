@@ -5,7 +5,7 @@ import {SuiueProvider} from "@suifans/suiue";
 
 <template>
 <suiue-provider :config="{
-    requiredFeatures: ['sui:signPersonalMessage', 'sui:signTransactionBlock'],
+    requiredFeatures: ['sui:signMessage', 'sui:signTransactionBlock', 'sui:signAndExecuteTransactionBlock'],
     autoConnect: 'enable'
 }">
     <app></app>
