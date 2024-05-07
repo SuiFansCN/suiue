@@ -10,6 +10,7 @@
         "sui",
         "dapp"
     ],
+    "type": "module",
     "files": [
         "CHANGELOG.md",
         "LICENSE",
@@ -17,10 +18,15 @@
         "packages"
     ],
     "scripts": {
-        "dev": "pnpm run --filter @suifans/suiue build --watch & pnpm run --filter @suifans/suiue-demo dev",
-        "test": "pnpm run --filter @suifans/suiue vitest",
-        "build": "pnpm run --filter @suifans/suiue vite build",
-        "preview": "pnpm run --filter @suifans/suiue vite preview"
+        "dev:demo": "pnpm run -C packages/demo dev",
+        "dev:docs": "pnpm run -C packages/docs dev",
+        "dev:suiue": "pnpm run -C packages/suiue dev",
+        "build:demo": "pnpm run -C packages/demo build",
+        "build:docs": "pnpm run -C packages/docs build",
+        "build:suiue": "pnpm run -C packages/suiue build",
+        "preview:docs": "pnpm run -C packages/docs preview",
+        "preview:demo": "pnpm run -C packages/demo preview",
+        "preview:suiue": "pnpm run -C packages/suiue preview"
     },
     "devDependencies": {
         "@types/node": "^20.12.7",
@@ -30,6 +36,7 @@
         "typescript": "^5.4.5",
         "vite": "^5.2.8",
         "vite-plugin-dts": "^3.8.2",
+        "vitepress": "^1.1.4",
         "vitest": "^1.5.0",
         "vue": "^3.4.21",
         "vue-tsc": "^1.8.27"

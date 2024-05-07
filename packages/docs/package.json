@@ -1,0 +1,22 @@
+{
+  "name": "@suifans/suiue-docs",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "keywords": [
+    "vue",
+    "vitepress",
+    "sui",
+    "web3"
+  ],
+  "author": "@suifans",
+  "license": "MIT",
+  "devDependencies": {
+    "@iminu/vitepress-plugin-auto-sidebar": "^1.0.3"
+  }
+}

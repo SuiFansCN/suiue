@@ -22,7 +22,7 @@ const datas = computed(() => {
             if (!obj.display) {
                 continue
             }
-            
+
             let newObj = {}
             Object.assign(newObj, obj.display)
             result.push(newObj)

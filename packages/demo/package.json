@@ -12,7 +12,7 @@
     ],
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "dev": "vite dev",
         "test": "vitest",
         "build": "vue-tsc && vite build",
         "preview": "vite preview"
