@@ -27,11 +27,65 @@ pnpm add @suifans/suiue
 假设你有一个这样的结构目录
 
 ```
-/src
-	app.vue
+./src
+	App.vue
 	main.ts
 	...
 ```
 
-我们建议你创建一个 ``
+我们首先创建一个组件，用来包裹 `App.vue`，这个组件提供了一个 `suiue-provider`。这是 `suiue` 运行所必需的上下文。
+
+```vue
+<!-- ProviderWrapper.vue -->
+
+<script setup lang="ts">
+import App from "@/App.vue";
+import {SuiueProvider} from "@suifans/suiue";
+</script>
+
+<template>
+<suiue-provider :config="{
+    requiredFeatures: ['sui:signMessage', 'sui:signTransactionBlock', 'sui:signAndExecuteTransactionBlock'],
+    autoConnect: 'enable'
+}">
+    <app></app>
+</suiue-provider>
+</template>
+
+<style scoped>
+
+</style>
+```
+
+关于详细的配置说明，请在[参考](./reference/index.md)中查阅
+
+随后你需要在 `main.ts` 中安装 `suiue`，并且将原来挂在至根节点的 `App.vue` 切换为 `ProviderWrapper.vue`
+
+```typescript
+// main.ts
+
+import {createApp} from 'vue'
+
+// App -> ProviderWrapper
+import ProviderWrapper from './ProviderWrapper.vue'
+import { createSuiue } from "@suifans/suiue";
+
+// App -> ProviderWrapper
+const app = createApp(ProviderWrapper)
+app.use(createSuiue())
+app.mount('#app')
+
+
+```
+
+至此，你已经完成了初步的配置工作
+
+
+
+## 连接按钮
+
+`suiue` 提供了一个基于 naive-ui 的 `connect-button`，如果你不希望使用 `naive-ui`，你依然可以自己实现一个连接按钮，这儿话题我们在这里暂不详细展开。
+
+```vue
+```
 
