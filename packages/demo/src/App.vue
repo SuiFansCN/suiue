@@ -34,8 +34,9 @@ onConnect(() => {
                 <content/>
             </template>
             <template v-else>
-                <n-flex style="width: 100%; padding-top: 128px" align="center" justify="center">
+                <n-flex vertical style="width: 100%; padding-top: 128px" align="center" justify="center">
                     <n-spin size="large"/>
+                    <n-h3>connect wallet to show</n-h3>
                 </n-flex>
             </template>
         </n-layout>

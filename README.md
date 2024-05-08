@@ -16,7 +16,8 @@ click [here](https://suiue.suifans.org/)
 
 ## demo
 
-click [here](./packages/demo)
+source: click [here](./packages/demo)
+live: click [here](https://suiue.suifans.org/demo)
 
 ## TODO
 - [x] Improve ts
