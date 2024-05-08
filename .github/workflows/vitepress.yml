@@ -19,12 +19,15 @@ jobs:
       - run: npm i pnpm -g
       - run: pnpm install
 
+      - name: Build Suiue
+        run: pnpm run build:suiue
+
       - name: Build DOCS
-        run: pnpm build:docs ./dist
+        run: pnpm run build:docs ./dist
       - run: mv packages/docs/dist ./dist
 
       - name: Build DEMO
-        run: pnpm build:demo
+        run: pnpm run build:demo
       - run: mv packages/demo/dist ./dist/demo
 
       - name: Deploy
