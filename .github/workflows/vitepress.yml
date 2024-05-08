@@ -21,11 +21,11 @@ jobs:
 
       - name: Build DOCS
         run: pnpm build:docs ./dist
-      - run: mv pacakages/docs/dist ./dist
+      - run: mv packages/docs/dist ./dist
 
       - name: Build DEMO
         run: pnpm build:demo
-      - run: mv pacakges/demo/dist ./dist/demo
+      - run: mv packages/demo/dist ./dist/demo
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
