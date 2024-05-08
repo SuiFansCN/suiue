@@ -36,17 +36,15 @@ jobs:
           node-version: 18
       - run: npm install -g pnpm
       - run: pnpm install
-      - run: cd packages/docs
-      - run: pnpm install
       - name: Build
-        run: pnpm run build ./dist
+        run: pnpm run build:docs ./dist
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload dist folder
-          path: './dist'
+          path: './packages/docs/dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
