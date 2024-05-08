@@ -33,7 +33,6 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm install -g pnpm
       - run: pnpm install
-      - run: cp .npmrc packages/suiue/
       - run: cd packages/suiue && pnpm install && pnpm run build && npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
