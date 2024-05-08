@@ -1,5 +1,5 @@
 {
-  "name": "@suifans/suiue-docs",
+  "name": "suiue-docs",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -17,13 +17,16 @@
   "author": "@suifans",
   "license": "MIT",
   "devDependencies": {
+    "@css-render/vue3-ssr": "^0.15.14",
     "@iminu/vitepress-plugin-auto-sidebar": "^1.0.3",
     "unplugin-auto-import": "^0.17.5",
-    "unplugin-vue-components": "^0.26.0"
+    "unplugin-vue-components": "^0.26.0",
+    "vitepress": "^1.1.4"
   },
   "dependencies": {
     "@mysten/sui.js": "^0.51.2",
-    "@suifans/suiue": "workspace:^",
-    "naive-ui": "^2.38.1"
+    "naive-ui": "^2.38.1",
+    "suiue": "workspace:*",
+    "vue": "^3.4.27"
   }
 }

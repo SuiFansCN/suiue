@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useWalletActions, consts} from "@suifans/suiue";
+import {useWalletActions, consts} from "suiue";
 import {TransactionBlock} from "@mysten/sui.js/transactions";
 
 const {signAndExecuteTransactionBlock, getExactlyCoinAmount} = useWalletActions()

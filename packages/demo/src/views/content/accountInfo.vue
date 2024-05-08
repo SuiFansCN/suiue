@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useWalletState, useWalletQuery, consts} from "@suifans/suiue";
+import {useWalletState, useWalletQuery, consts} from "suiue";
 
 const {address} = useWalletState();
 const {suiBalance} = useWalletQuery()

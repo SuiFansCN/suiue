@@ -1,6 +1,6 @@
-<script setup>
+<script setup lang="ts">
 import DefaultTheme from 'vitepress/theme'
-import { SuiueProvider, NConnectButton } from "@suifans/suiue"
+import { SuiueProvider, NConnectButton } from "suiue"
 import { NConfigProvider, darkTheme, lightTheme } from "naive-ui"
 import { useData } from "vitepress"
 const { Layout } = DefaultTheme

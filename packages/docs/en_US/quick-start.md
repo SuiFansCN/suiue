@@ -1,7 +1,5 @@
-[//]: # (i will translate it to english)
-
 <script setup>
-import { useWalletState, useWalletQuery, useWalletActions, consts, InsufficientBalanceError } from "@suifans/suiue"
+import { useWalletState, useWalletQuery, useWalletActions, consts, InsufficientBalanceError } from "suiue"
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { ref } from "vue"
 const state = useWalletState()
@@ -51,11 +49,11 @@ Similarly, you can also take a look at the [`demo`](https://github.com/SuiFansCN
 
 ```shell
 # npm
-npm install @suifans/suiue
+npm install suiue
 # yarn
-yarn add @suifans/suiue
+yarn add suiue
 # pnpm
-pnpm add @suifans/suiue
+pnpm add suiue
 ```
 
 ## Configuration
@@ -78,7 +76,7 @@ Now, we create a component to wrap `App.vue`. This component provides a `suiue-p
 
 <script setup lang="ts">
     import App from "@/App.vue";
-    import {SuiueProvider} from "@suifans/suiue";
+    import {SuiueProvider} from "suiue";
 </script>
 
 <template>
@@ -108,7 +106,7 @@ import {createApp} from "vue";
 
 // App -> ProviderWrapper
 import ProviderWrapper from "./ProviderWrapper.vue";
-import {createSuiue} from "@suifans/suiue";
+import {createSuiue} from "suiue";
 
 // App -> ProviderWrapper
 const app = createApp(ProviderWrapper);
@@ -126,7 +124,7 @@ At this point, you have completed the preliminary configuration work
 ```vue
 
 <script setup lang="ts">
-    import {SuiueProvider, NConnectButton} from "@suifans/suiue";
+    import {SuiueProvider, NConnectButton} from "suiue";
 </script>
 
 <template>
@@ -145,7 +143,7 @@ According to the usage habits of `VUE`, we encapsulate all states into `useWalle
 ```vue
 
 <script setup lang="ts">
-    import {useWalletState} from "@suifans/suiue";
+    import {useWalletState} from "suiue";
 
     const state = useWalletState()
 </script>
@@ -177,7 +175,7 @@ For more information about state, check out [Reference](./reference/wallet-state
 For `useWalletXxx`, destructuring operation is supported and can be used conveniently.
 
 ```typescript
-import {useWalletState, useWalletQuery} from "@suifans/suiue"
+import {useWalletState, useWalletQuery} from "suiue"
 
 const {isConnected} = useWalletState()
 const {suiBalance} = useWalletQuery()
@@ -188,7 +186,7 @@ const {suiBalance} = useWalletQuery()
 ```vue
 
 <script lang="ts" setup>
-    import {useWalletState, useWalletQuery} from "@suifans/suiue"
+    import {useWalletState, useWalletQuery} from "suiue"
 
     const state = useWalletState()
     const {isConnected} = state
@@ -218,7 +216,7 @@ These contents are encapsulated in `useWalletQuery`
 ```vue
 
 <script lang="ts" setup>
-    import {useWalletQuery} from "@suifans/suiue"
+    import {useWalletQuery} from "suiue"
 
     const {suiBalance} = useWalletQuery()
 </script>
@@ -239,7 +237,7 @@ Connect to show suiBalance
 `Suiue` will query SUI's `Balance` and `coins` by default. If you need to get your own data, you can use `loadXXX` to load it.
 
 ```typescript
-import {useWalletQuery} from "@suifans/suiue"
+import {useWalletQuery} from "suiue"
 
 const query = useWalletQuery()
 
@@ -264,7 +262,7 @@ for example：
 ```vue
 
 <script setup lang="ts">
-    import {useWalletQuery} from "@suifans/suiue"
+    import {useWalletQuery} from "suiue"
 
     const {loadObjects, objects} = useWalletQuery()
 
@@ -301,7 +299,7 @@ connect wallet to show objects
 ```vue
 
 <script setup lang="ts">
-    import {useWalletActions, consts, InsufficientBalanceError} from "@suifans/suiue"
+    import {useWalletActions, consts, InsufficientBalanceError} from "suiue"
     import {TransactionBlock} from "@mysten/sui.js/transactions";
 
     const {signAndExecuteTransactionBlock, getExactlyCoinAmount} = useWalletActions()

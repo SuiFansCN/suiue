@@ -1,24 +1,24 @@
 <template>
 
-    <slot/>
+    <slot />
 
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted} from "vue";
-import {SuiClient, getFullnodeUrl} from "@mysten/sui.js/client"
-import {SuiGraphQLClient} from "@mysten/sui.js/graphql"
+import { computed, onMounted } from "vue";
+import { SuiClient, getFullnodeUrl } from "@mysten/sui.js/client"
+import { SuiGraphQLClient } from "@mysten/sui.js/graphql"
 
-import {setProvider, useProvider} from "@/provider.ts";
-import {forceBindThis} from "@/utils.ts";
-import {WalletState} from "@/context/walletState.ts";
-import {WalletQuery} from "@/context/walletQuery";
-import {WalletActions} from "@/context/walletActions.ts";
-import {getWalletConnectionInfo, getWalletIdentifier} from "@/walletUtils.ts";
-import {ProviderAlreadyExistsError} from "@/errors.ts"
+import { setProvider, useProvider } from "@/provider.ts";
+import { forceBindThis } from "@/utils.ts";
+import { WalletState } from "@/context/walletState.ts";
+import { WalletQuery } from "@/context/walletQuery";
+import { WalletActions } from "@/context/walletActions.ts";
+import { getWalletConnectionInfo, getWalletIdentifier } from "@/walletUtils.ts";
+import { ProviderAlreadyExistsError } from "@/errors.ts"
 
-import type {Wallet, WalletWithSuiFeatures} from "@mysten/wallet-standard";
-import type {AutoConnectType, SuiNetworksType} from "@/types.ts";
+import type { Wallet, WalletWithSuiFeatures } from "@mysten/wallet-standard";
+import type { AutoConnectType, SuiNetworksType } from "@/types.ts";
 
 export type SuiueProviderConfig = {
     id: string,
@@ -43,56 +43,56 @@ const props = defineProps({
                 throw new Error("suiue provider config must be an object")
             }
 
-            if (!config.id) {
-                config.id = "suiue-default-provider"
-            }
+            // if (!config.id) {
+            //     config.id = "suiue-default-provider"
+            // }
 
-            if (!config.autoConnect) {
-                config.autoConnect = "disable"
-            }
+            // if (!config.autoConnect) {
+            //     config.autoConnect = "disable"
+            // }
 
-            if (!config.network) {
-                config.network = "mainnet"
-            }
+            // if (!config.network) {
+            //     config.network = "mainnet"
+            // }
 
-            if (!config.suiClientQL) {
-                config.suiClientQL = new SuiGraphQLClient({url: `https://sui-${config.network}.mystenlabs.com/`})
-            }
+            // if (!config.suiClientQL) {
+            //     config.suiClientQL = new SuiGraphQLClient({ url: `https://sui-${config.network}.mystenlabs.com/` })
+            // }
 
-            if (!config.suiClient) {
-                config.suiClient = new SuiClient({url: getFullnodeUrl(config.network)})
-            }
+            // if (!config.suiClient) {
+            //     config.suiClient = new SuiClient({ url: getFullnodeUrl(config.network) })
+            // }
 
-            if (!config.preferredWallets) {
-                config.preferredWallets = []
-            }
+            // if (!config.preferredWallets) {
+            //     config.preferredWallets = []
+            // }
 
-            // 这三功能强制要求，否则无法正常工作
-            if (!config.requiredFeatures) {
-                config.requiredFeatures = ["standard:connect", "sui:signAndExecuteTransactionBlock", "standard:events", "standard:disconnect"]
-            }
-            if (!("standard:connect" in config.requiredFeatures)) {
-                config.requiredFeatures.push("standard:connect")
-            }
-            if (!("standard:disconnect" in config.requiredFeatures)) {
+            // // 这三功能强制要求，否则无法正常工作
+            // if (!config.requiredFeatures) {
+            //     config.requiredFeatures = ["standard:connect", "sui:signAndExecuteTransactionBlock", "standard:events", "standard:disconnect"]
+            // }
+            // if (!("standard:connect" in config.requiredFeatures)) {
+            //     config.requiredFeatures.push("standard:connect")
+            // }
+            // if (!("standard:disconnect" in config.requiredFeatures)) {
 
-                config.requiredFeatures.push("standard:disconnect")
-            }
-            if (!("standard:events" in config.requiredFeatures)) {
-                config.requiredFeatures.push("standard:events")
-            }
+            //     config.requiredFeatures.push("standard:disconnect")
+            // }
+            // if (!("standard:events" in config.requiredFeatures)) {
+            //     config.requiredFeatures.push("standard:events")
+            // }
 
-            if (!config.walletFilter) {
-                config.walletFilter = () => true
-            }
+            // if (!config.walletFilter) {
+            //     config.walletFilter = () => true
+            // }
 
-            if (!config.queryRetry) {
-                config.queryRetry = 5
-            }
+            // if (!config.queryRetry) {
+            //     config.queryRetry = 5
+            // }
 
-            if (!config.queryRetryIntervalMs) {
-                config.queryRetryIntervalMs = 5000
-            }
+            // if (!config.queryRetryIntervalMs) {
+            //     config.queryRetryIntervalMs = 5000
+            // }
 
             return true
         },
@@ -108,20 +108,77 @@ const props = defineProps({
     },
 })
 
+function buildConfig(config: SuiueProviderConfig) {
+    if (!config.id) {
+        config.id = "suiue-default-provider"
+    }
+
+    if (!config.autoConnect) {
+        config.autoConnect = "disable"
+    }
+
+    if (!config.network) {
+        config.network = "mainnet"
+    }
+
+    if (!config.suiClientQL) {
+        config.suiClientQL = new SuiGraphQLClient({ url: `https://sui-${config.network}.mystenlabs.com/` })
+    }
+
+    if (!config.suiClient) {
+        config.suiClient = new SuiClient({ url: getFullnodeUrl(config.network) })
+    }
+
+    if (!config.preferredWallets) {
+        config.preferredWallets = []
+    }
+
+    // 这三功能强制要求，否则无法正常工作
+    if (!config.requiredFeatures) {
+        config.requiredFeatures = ["standard:connect", "sui:signAndExecuteTransactionBlock", "standard:events", "standard:disconnect"]
+    }
+    if (!("standard:connect" in config.requiredFeatures)) {
+        config.requiredFeatures.push("standard:connect")
+    }
+    if (!("standard:disconnect" in config.requiredFeatures)) {
+
+        config.requiredFeatures.push("standard:disconnect")
+    }
+    if (!("standard:events" in config.requiredFeatures)) {
+        config.requiredFeatures.push("standard:events")
+    }
+
+    if (!config.walletFilter) {
+        config.walletFilter = () => true
+    }
+
+    if (!config.queryRetry) {
+        config.queryRetry = 5
+    }
+
+    if (!config.queryRetryIntervalMs) {
+        config.queryRetryIntervalMs = 5000
+    }
+
+    return config
+}
+
+
 const emit = defineEmits(["update:state", "update:query", "update:actions"])
 
+const config = buildConfig(props.config as SuiueProviderConfig)
 
-if (useProvider("PROVIDERS").includes(props.config.id!)) {
+if (useProvider("PROVIDERS").includes(config.id!)) {
     throw new ProviderAlreadyExistsError()
 }
 
-const walletState = forceBindThis(new WalletState(props.config as SuiueProviderConfig))
-const walletQuery = forceBindThis(new WalletQuery(props.config as SuiueProviderConfig, walletState))
-const walletActions = forceBindThis(new WalletActions(props.config as SuiueProviderConfig, walletQuery, walletState))
+const walletState = forceBindThis(new WalletState(config))
+const walletQuery = forceBindThis(new WalletQuery(config, walletState))
+const walletActions = forceBindThis(new WalletActions(config, walletQuery, walletState))
 
 // do not mix up this order
-setProvider("PROVIDER", props.config.id!)
-setProvider("PROVIDER_CONFIG", props.config as SuiueProviderConfig)
+setProvider("PROVIDER", config.id)
+setProvider("PROVIDER_CONFIG", config)
 setProvider("WALLET_STATE", walletState)
 setProvider("WALLET_QUERY", walletQuery)
 setProvider("WALLET_ACTIONS", walletActions)
@@ -131,7 +188,7 @@ emit("update:query", walletQuery)
 emit("update:actions", walletActions)
 
 onMounted(() => {
-
+    
     // trigger auto connect
     const autoConnectCmp = computed(async () => {
         /* use computed to wait target wallet mount, and stop when success */

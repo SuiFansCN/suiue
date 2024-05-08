@@ -1,8 +1,8 @@
 import { registerWallet } from "@/browserWallets.ts"
-import type { App } from "vue";
+import type { App, Plugin } from "vue";
 
 
-export function createSuiue() {
+export function createSuiue(): Plugin<[]> {
     return {
         install: (
             app: App,

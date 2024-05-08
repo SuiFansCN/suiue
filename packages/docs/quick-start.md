@@ -1,5 +1,5 @@
 <script setup>
-import { useWalletState, useWalletQuery, useWalletActions, consts, InsufficientBalanceError } from "@suifans/suiue"
+import { useWalletState, useWalletQuery, useWalletActions, consts, InsufficientBalanceError } from "suiue"
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { ref } from "vue"
 const state = useWalletState()
@@ -49,11 +49,11 @@ async function sponsorMe() {
 
 ```shell
 # npm
-npm install @suifans/suiue
+npm install suiue
 # yarn
-yarn add @suifans/suiue
+yarn add suiue
 # pnpm
-pnpm add @suifans/suiue
+pnpm add suiue
 ```
 
 ## 配置
@@ -76,7 +76,7 @@ pnpm add @suifans/suiue
 
 <script setup lang="ts">
     import App from "@/App.vue";
-    import {SuiueProvider} from "@suifans/suiue";
+    import {SuiueProvider} from "suiue";
 </script>
 
 <template>
@@ -106,7 +106,7 @@ import {createApp} from "vue";
 
 // App -> ProviderWrapper
 import ProviderWrapper from "./ProviderWrapper.vue";
-import {createSuiue} from "@suifans/suiue";
+import {createSuiue} from "suiue";
 
 // App -> ProviderWrapper
 const app = createApp(ProviderWrapper);
@@ -124,7 +124,7 @@ app.mount("#app");
 ```vue
 
 <script setup lang="ts">
-    import {SuiueProvider, NConnectButton} from "@suifans/suiue";
+    import {SuiueProvider, NConnectButton} from "suiue";
 </script>
 
 <template>
@@ -143,7 +143,7 @@ app.mount("#app");
 ```vue
 
 <script setup lang="ts">
-    import {useWalletState} from "@suifans/suiue";
+    import {useWalletState} from "suiue";
 
     const state = useWalletState()
 </script>
@@ -175,7 +175,7 @@ isConnected: {{ state.isConnected }}
 对于 `useWalletXxx`，支持解构操作，可以方便使用。
 
 ```typescript
-import {useWalletState, useWalletQuery} from "@suifans/suiue"
+import {useWalletState, useWalletQuery} from "suiue"
 
 const {isConnected} = useWalletState()
 const {suiBalance} = useWalletQuery()
@@ -186,7 +186,7 @@ const {suiBalance} = useWalletQuery()
 ```vue
 
 <script lang="ts" setup>
-    import {useWalletState, useWalletQuery} from "@suifans/suiue"
+    import {useWalletState, useWalletQuery} from "suiue"
 
     const state = useWalletState()
     const {isConnected} = state
@@ -216,7 +216,7 @@ const {suiBalance} = useWalletQuery()
 ```vue
 
 <script lang="ts" setup>
-    import {useWalletQuery} from "@suifans/suiue"
+    import {useWalletQuery} from "suiue"
 
     const {suiBalance} = useWalletQuery()
 </script>
@@ -237,7 +237,7 @@ Connect to show suiBalance
 `Suiue` 默认会去查询 SUI 的 `Balance` 和 `coins`，如果你需要获取你自己的数据，可以使用 `loadXXX` 来加载
 
 ```typescript
-import {useWalletQuery} from "@suifans/suiue"
+import {useWalletQuery} from "suiue"
 
 const query = useWalletQuery()
 
@@ -263,7 +263,7 @@ const barObject = await query.loadObjects("0xyourpackage::foo::bar")
 ```vue
 
 <script setup lang="ts">
-    import {useWalletQuery} from "@suifans/suiue"
+    import {useWalletQuery} from "suiue"
 
     const {loadObjects, objects} = useWalletQuery()
 
@@ -300,7 +300,7 @@ connect wallet to show objects
 ```vue
 
 <script setup lang="ts">
-    import {useWalletActions, consts, InsufficientBalanceError} from "@suifans/suiue"
+    import {useWalletActions, consts, InsufficientBalanceError} from "suiue"
     import {TransactionBlock} from "@mysten/sui.js/transactions";
 
     const {signAndExecuteTransactionBlock, getExactlyCoinAmount} = useWalletActions()

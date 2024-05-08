@@ -132,7 +132,7 @@ export class WalletState {
 
         })
 
-        await this.handlerConnect()
+        this.handlerConnect()
         
     }
 

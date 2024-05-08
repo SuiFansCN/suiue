@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useWalletQuery} from "@suifans/suiue";
+import {useWalletQuery} from "suiue";
 
 import {computed} from "vue";
 

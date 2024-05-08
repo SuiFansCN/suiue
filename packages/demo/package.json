@@ -1,5 +1,5 @@
 {
-    "name": "@suifans/suiue-demo",
+    "name": "suiue-demo",
     "version": "0.1.0",
     "private": true,
     "author": "SuiFansCN",
@@ -27,10 +27,11 @@
     "dependencies": {
         "@mysten/sui.js": "^0.51.2",
         "@mysten/wallet-standard": "^0.11.2",
-        "@suifans/suiue": "workspace:^",
+        "suiue": "workspace:^",
         "gql.tada": "^1.5.5"
     },
     "devDependencies": {
+        "vue": "^3.4.27",
         "naive-ui": "^2.38.1",
         "ts-node": "^10.9.2",
         "unplugin-auto-import": "^0.17.5",

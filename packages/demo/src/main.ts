@@ -2,7 +2,7 @@
 
 import {createApp} from 'vue'
 import App from './ProviderWrapper.vue'
-import { createSuiue } from "@suifans/suiue";
+import { createSuiue } from "suiue";
 import {getWallets, WalletWithRequiredFeatures} from "@mysten/wallet-standard";
 
 // vfonts

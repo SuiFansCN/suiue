@@ -10,7 +10,9 @@ const showModal = ref<boolean>(false)
 const {isConnected, address, connect, disconnect, wallets} = useWalletState();
 const {domain} = useWalletQuery()
 
-const toggleModal = () => showModal.value = !showModal.value
+const toggleModal = () => {
+    showModal.value = !showModal.value
+}
 
 const mouseIn = ref<boolean>(false)
 

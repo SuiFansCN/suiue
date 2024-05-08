@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import SuiIcon from "@/views/suiIcon.vue";
-import { NConnectButton } from "@suifans/suiue"
+import {NConnectButton, useWalletState, useWalletQuery} from "suiue"
 import Content from "@/views/content.vue";
-import { useWalletState, useWalletQuery } from "@suifans/suiue";
 
 
-const { isConnected, onConnect } = useWalletState()
-const { loadAllBalance, loadAllObjects, loadAllCoins } = useWalletQuery()
+const {isConnected, onConnect} = useWalletState()
+const {loadAllBalance, loadAllObjects, loadAllCoins} = useWalletQuery()
 
 onConnect(() => {
     loadAllBalance()
@@ -20,19 +19,23 @@ onConnect(() => {
     <n-layout>
         <n-layout-header bordered style="width: 100%; padding: 14px">
             <n-page-header title="Suiue Demo">
-                <template #avatar><sui-icon/></template>
-                <template #extra><n-connect-button/></template>
+                <template #avatar>
+                    <sui-icon/>
+                </template>
+                <template #extra>
+                    <n-connect-button/>
+                </template>
             </n-page-header>
 
         </n-layout-header>
 
         <n-layout bordered position="absolute" content-style="padding: 16px" style="top: 64px; width: 100%">
             <template v-if="isConnected">
-                <content />
+                <content/>
             </template>
             <template v-else>
                 <n-flex style="width: 100%; padding-top: 128px" align="center" justify="center">
-                    <n-spin size="large" />
+                    <n-spin size="large"/>
                 </n-flex>
             </template>
         </n-layout>
@@ -56,7 +59,7 @@ onConnect(() => {
 
 <style>
 
-#app{
+#app {
     position: relative;
     height: 100vh;
     width: 100vw;
