@@ -13,6 +13,10 @@ hero:
     - theme: alt
       text: 参考文档
       link: /reference/index.md
+    - theme: alt
+      text: DEMO
+      link: /demo
+      target: _blank
 
 features:
   - title: VUE本地化风格

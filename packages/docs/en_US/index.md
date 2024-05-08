@@ -13,6 +13,10 @@ hero:
     - theme: alt
       text: reference
       link: /en_US/reference/index.md
+    - theme: alt
+      text: DEMO
+      link: /demo
+      target: _blank
 
 features:
   - title: vue localization style 

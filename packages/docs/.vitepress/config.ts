@@ -34,7 +34,9 @@ export default defineConfig({
             noExternal: ['naive-ui', 'date-fns', 'vueuc']
         }
     },
-
+    sitemap:{
+      hostname: "https://suiue.suifans.org"
+    },
     lang: 'zh-Hans',
     cleanUrls: true,
     metaChunk: true,
