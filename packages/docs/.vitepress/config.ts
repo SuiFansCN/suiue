@@ -11,7 +11,6 @@ const fileAndStyles: Record<string, string> = {}
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
     vite: {
-        base: '/suiue/',
         plugins: [
             AutoSidebar(),
             AutoImport({
