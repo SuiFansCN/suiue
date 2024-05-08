@@ -33,8 +33,6 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm install -g pnpm
       - run: pnpm install
-      - run: cd packages/suiue
-      - run: pnpm build
-      - run: npm publish
+      - run: cd packages/suiue && pnpm install && pnpm run build && npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
