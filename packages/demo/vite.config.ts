@@ -28,6 +28,7 @@ export default defineConfig({
             resolvers: [NaiveUiResolver()]
         })
     ],
+    base: '/suiue/demo/',
     build: {
         rollupOptions: {
             output: {

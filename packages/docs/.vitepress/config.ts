@@ -11,6 +11,7 @@ const fileAndStyles: Record<string, string> = {}
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
     vite: {
+        base: '/suiue/',
         plugins: [
             AutoSidebar(),
             AutoImport({
@@ -34,6 +35,7 @@ export default defineConfig({
             noExternal: ['naive-ui', 'date-fns', 'vueuc']
         }
     },
+
     lang: 'zh-Hans',
     cleanUrls: true,
     metaChunk: true,
