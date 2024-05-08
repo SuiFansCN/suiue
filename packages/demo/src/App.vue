@@ -20,7 +20,6 @@ onConnect(() => {
     <n-layout>
         <n-layout-header bordered style="width: 100%; padding: 14px">
             <n-page-header title="Suiue Demo">
-
                 <template #avatar><sui-icon/></template>
                 <template #extra><n-connect-button/></template>
             </n-page-header>

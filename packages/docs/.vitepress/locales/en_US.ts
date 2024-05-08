@@ -1,8 +1,6 @@
-import { createRequire } from 'module'
-import { defineConfig, type DefaultTheme } from 'vitepress'
+import {createRequire} from 'module'
+import {defineConfig, type DefaultTheme} from 'vitepress'
 
-const require = createRequire(import.meta.url)
-const pkg = require('vitepress/package.json')
 
 export const en = defineConfig({
     lang: 'en-US',
@@ -28,7 +26,7 @@ function nav(): DefaultTheme.NavItem[] {
         },
         {
             text: 'reference',
-            link: '/en_US/reference/index.md',
+            link: '/en_US/reference/wallet-state.md',
             activeMatch: '/en_US/reference/'
         },
     ]

@@ -1,17 +1,14 @@
-import {registerWallet} from "@/browserWallets.ts"
-import type {Plugin} from "vue";
+import { registerWallet } from "@/browserWallets.ts"
+import type { App } from "vue";
 
 
 export function createSuiue() {
     return {
         install: (
-            app
+            app: App,
         ) => {
-            // if(!getActivePinia()){
-            //     app.use(createPinia())
-            // }
             app.provide("PROVIDERS", [])
             registerWallet()
         }
-    } as Plugin
+    }
 }

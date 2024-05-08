@@ -1,6 +1,6 @@
 {
     "name": "@suifans/suiue",
-    "version": "0.0.2-alpha",
+    "version": "0.0.2-beta",
     "author": "SuiFansCN",
     "license": "MIT",
     "keywords": [
@@ -41,7 +41,8 @@
         "naive-ui": "^2.38.1",
         "typescript": "^5.4.5",
         "vfonts": "^0.0.3",
-        "vite-plugin-chunk-split": "^0.5.0"
+        "vite-plugin-chunk-split": "^0.5.0",
+        "vue": "^3.4.21"
     },
     "dependencies": {
         "@mysten/sui.js": "^0.51.2",

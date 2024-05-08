@@ -3,23 +3,23 @@
 layout: home
 
 hero:
-  name: "Suiue"
-  text: "vue development kit design for sui"
+  name: Suiue
+  text: A dapp-kit for VUE developers on SUI
   tagline: Just vue-style like
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: quick start
+      link: /en_US/quick-start
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: reference
+      link: /en_US/reference/index.md
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: vue localization style 
+    details: Tailored for VUE developers, everything is responsive!
+  - title: Integrated practical functions
+    details: Compared with the official dapp-kit, it is more user-friendly!
+  - title: Personalized support
+    details: More configuration options, and it also works out of the box!
 ---
 

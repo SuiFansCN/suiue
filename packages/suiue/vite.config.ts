@@ -42,10 +42,10 @@ export default defineConfig({
             },
             input: ["src/exports.ts"]
         },
-        watch: {
-            clearScreen: true,
-            include: ["src/**"]
-        },
+        // watch: {
+        //     clearScreen: true,
+        //     include: ["src/**"]
+        // },
         outDir: "./lib",
         lib: {
             entry: resolve(__dirname, "src/exports.ts"),

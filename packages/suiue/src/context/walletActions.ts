@@ -73,6 +73,18 @@ export class WalletActions {
         })
     }
 
+    public async signMessage(message: string | Uint8Array) {
+        this.check("sui:signMessage")
+        if (typeof message === "string") {
+            message = new TextEncoder().encode(message)
+        }
+
+        return await this.state.wallet.value!.features["sui:signMessage"]!.signMessage({
+            message,
+            account: this.state.account.value
+        })
+    }
+
     public async getExactlyCoinAmount(
         options: {
             txb: TransactionBlock,

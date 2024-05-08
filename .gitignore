@@ -25,3 +25,4 @@ dist-ssr
 /packages/suiue/lib
 /packages/docs/.vitepress/cache
 /packages/docs/.vitepress/config.ts.timestamp-*
+/.vitepress/cache

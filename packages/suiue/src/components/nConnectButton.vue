@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import 'vfonts/Lato.css'
 import {ref} from "vue";
-import {NModal, NButton, NGrid, NGridItem, NSpace, NIcon} from "naive-ui";
+import {NModal, NButton, NGrid, NGridItem, NFlex, NText, NA} from "naive-ui";
 import {useWalletQuery} from "@/context/walletQuery";
 import {useWalletState} from "@/context/walletState";
 
@@ -18,6 +18,7 @@ const mouseIn = ref<boolean>(false)
 
 <template>
     <n-button
+        v-bind="$attrs"
         @mouseenter="mouseIn = true"
         @mouseleave="mouseIn = false"
         @click="isConnected ? disconnect() : toggleModal()"
@@ -42,22 +43,20 @@ const mouseIn = ref<boolean>(false)
         style="min-width: 480px; max-width: 860px; width: 40vw"
     >
         <template #header-extra>
-            Powered by suifans
+            <n-a href="https://github.com/SuiFansCN/suiue" target="blank">Suiue by suifans</n-a>
         </template>
 
         <n-grid
             :cols="3"
-            :x-gap="8"
-            :y-gap="8"
+            :x-gap="24"
+            :y-gap="24"
         >
             <n-grid-item v-for="wallet in wallets" :key="JSON.stringify(wallet.chains)">
-                <n-button @click="connect(wallet).then(toggleModal)" style="height: 114px">
-                    <n-space vertical>
-                        <n-icon size="64">
-                            <img :src="wallet.icon" :alt="wallet.name">
-                        </n-icon>
-                        <span>{{ wallet.name }}</span>
-                    </n-space>
+                <n-button @click="connect(wallet).then(toggleModal)" style="height: 114px; width: 100%">
+                    <n-flex style="height: 100%; width: 100%;" vertical size="large">
+                        <img style="width: 58px; margin: auto" :src="wallet.icon" :alt="wallet.name">
+                        <n-text>{{ wallet.name }}</n-text>
+                    </n-flex>
                 </n-button>
             </n-grid-item>
         </n-grid>

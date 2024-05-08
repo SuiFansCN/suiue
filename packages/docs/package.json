@@ -17,6 +17,13 @@
   "author": "@suifans",
   "license": "MIT",
   "devDependencies": {
-    "@iminu/vitepress-plugin-auto-sidebar": "^1.0.3"
+    "@iminu/vitepress-plugin-auto-sidebar": "^1.0.3",
+    "unplugin-auto-import": "^0.17.5",
+    "unplugin-vue-components": "^0.26.0"
+  },
+  "dependencies": {
+    "@mysten/sui.js": "^0.51.2",
+    "@suifans/suiue": "workspace:^",
+    "naive-ui": "^2.38.1"
   }
 }
