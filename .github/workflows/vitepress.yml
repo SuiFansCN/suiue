@@ -23,8 +23,8 @@ jobs:
         run: pnpm run build:suiue
 
       - name: Build DOCS
-        run: pnpm run build:docs ./dist
-      - run: mv packages/docs/dist ./dist
+        run: pnpm run build:docs
+      - run: mv packages/docs/.vitepress/dist ./dist
 
       - name: Build DEMO
         run: pnpm run build:demo
