@@ -2,40 +2,28 @@
 
 > the vue dapp-kit for sui
 
-**本项目目前处于初期预览状态，可能随时会发生改变，请谨慎用于生产环境！**
 
-## install
+## features
 
-```bash
-npm install @suifans/suiue
-```
+- vue localization style
+- Integrated practical functions
+- Personalized support
+- More configuration options, and it also works out of the box!
 
-## examples
-```typescript
+## documentation
 
-const {
-    signPresonalMessage,
-    signAndExecuteTransactionBlock,
-    SignTransactionBlock,
-} = useWalletAction()
+click [here](https://suiue.suifans.org/)
 
-// if wallet is not connected, it will open the wallet connect modal and continue
-signAndExecuteTransactionBlock(...)
+## demo
 
-
-const {
-    address,
-    getAllCoins,
-    getSuiCoin
-} = useWalletInfo()
-```
-
-请看 [suiue-example](./demo/App.vue)
+click [here](./packages/demo)
 
 ## TODO
-- [ ] 改善ts
-- [ ] 添加文档
-- [ ] 完善demo
-- [ ] 添加更多实用方法
-- [ ] 添加内置UI组件
-- [ ] 嵌入式SUI钱包
+- [x] Improve ts
+- [x] Add documentation
+- [x] Add demo
+- [x] Built-in UI components
+- [ ] Customizable UI components
+- [ ] Fully unit-test
+- [ ] More practical functions
+- [ ] embedded sui wallet
