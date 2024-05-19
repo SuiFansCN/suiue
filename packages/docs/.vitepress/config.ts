@@ -34,8 +34,8 @@ export default defineConfig({
             noExternal: ['naive-ui', 'date-fns', 'vueuc']
         }
     },
-    sitemap:{
-      hostname: "https://suiue.suifans.org"
+    sitemap: {
+        hostname: "https://suiue.suifans.org"
     },
     lang: 'zh-Hans',
     cleanUrls: true,
@@ -84,5 +84,14 @@ export default defineConfig({
         if (style) {
             return code.replace(/<\/head>/, style + '</head>')
         }
-    }
+    },
+    head: [
+        [
+            "script", {
+                defer: "true",
+                src: "https://cloud.umami.is/script.js",
+                "data-website-id": "95a1e179-eb6e-4104-900e-927004a2c431"
+            }
+        ] // umami.is analytics
+    ]
 })
