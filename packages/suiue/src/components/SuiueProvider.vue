@@ -135,14 +135,10 @@ function buildConfig(config: SuiueProviderConfig) {
 
     // 这三功能强制要求，否则无法正常工作
     if (!config.requiredFeatures) {
-        config.requiredFeatures = ["standard:connect", "sui:signAndExecuteTransactionBlock", "standard:events", "standard:disconnect"]
+        config.requiredFeatures = ["standard:connect", "sui:signAndExecuteTransactionBlock", "standard:events"]
     }
     if (!("standard:connect" in config.requiredFeatures)) {
         config.requiredFeatures.push("standard:connect")
-    }
-    if (!("standard:disconnect" in config.requiredFeatures)) {
-
-        config.requiredFeatures.push("standard:disconnect")
     }
     if (!("standard:events" in config.requiredFeatures)) {
         config.requiredFeatures.push("standard:events")
