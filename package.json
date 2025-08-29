@@ -1,13 +1,24 @@
 {
-    "name": "@suifans/suiue-monorepo",
-    "version": "2.0.0",
-    "private": true,
-    "author": "SuiFansCN",
-    "license": "MIT",
+    "name": "suiue-monorepo",
     "type": "module",
-    "scripts": {},
+    "private": true,
+    "scripts": {
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    },
     "devDependencies": {
-        "@types/node": "^20.19.11",
-        "typescript": "^5.9.2"
+        "@antfu/eslint-config": "^5.2.1",
+        "eslint": "^9.34.0",
+        "lint-staged": "^16.1.5",
+        "simple-git-hooks": "^2.13.1"
+    },
+    "simple-git-hooks": {
+        "pre-commit": "pnpm lint-staged"
+    },
+    "lint-staged": {
+        "*": "eslint --fix"
     }
 }

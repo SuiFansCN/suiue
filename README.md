@@ -2,7 +2,6 @@
 
 > the vue dapp-kit for sui
 
-
 ## features
 
 - vue localization style
