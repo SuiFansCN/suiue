@@ -1,53 +1,13 @@
 {
-    "name": "suiue",
-    "version": "0.0.4",
-    "author": "SuiFansCN",
-    "license": "MIT",
-    "keywords": [
-        "vue",
-        "web3",
-        "sui",
-        "dapp"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SuiFansCN/suiue.git"
-    },
-    "bugs": "https://github.com/SuiFansCN/suiue/issues",
-    "homepage": "https://github.com/SuiFansCN/suiue",
-    "type": "module",
-    "exports": {
-        ".": {
-            "import": "./lib/suiue.js",
-            "require": "./lib/suiue.umd.cjs",
-            "types": "./lib/types/exports.d.ts"
-        }
-    },
-    "scripts": {
-        "dev": "vite",
-        "test": "vitest",
-        "build": "vue-tsc && vite build",
-        "preview": "vite preview"
-    },
-    "files": [
-        "CHANGELOG.md",
-        "/lib",
-        "/src"
-    ],
-    "devDependencies": {
-        "@0no-co/graphqlsp": "^1.10.3",
-        "naive-ui": "^2.38.1",
-        "typescript": "^5.4.5",
-        "vfonts": "^0.0.3",
-        "vite-plugin-chunk-split": "^0.5.0",
-        "vue": "^3.4.27"
-    },
-    "dependencies": {
-        "@mysten/sui.js": "^0.51.2",
-        "@mysten/wallet-standard": "^0.11.2",
-        "gql.tada": "^1.5.5"
-    },
-    "publishConfig": {
-        "access": "public"
-    }
+  "name": "@suifans/suiue-monorepo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.4"
 }

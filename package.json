@@ -1,43 +1,13 @@
 {
     "name": "@suifans/suiue-monorepo",
-    "version": "0.0.2",
+    "version": "2.0.0",
     "private": true,
     "author": "SuiFansCN",
     "license": "MIT",
-    "keywords": [
-        "vue",
-        "web3",
-        "sui",
-        "dapp"
-    ],
     "type": "module",
-    "files": [
-        "CHANGELOG.md",
-        "LICENSE",
-        "README.md",
-        "packages"
-    ],
-    "scripts": {
-        "dev:demo": "pnpm run -C packages/demo dev",
-        "dev:docs": "pnpm run -C packages/docs dev",
-        "dev:suiue": "pnpm run -C packages/suiue dev",
-        "build:demo": "pnpm run -C packages/demo build",
-        "build:docs": "pnpm run -C packages/docs build",
-        "build:suiue": "pnpm run -C packages/suiue build",
-        "preview:docs": "pnpm run -C packages/docs preview",
-        "preview:demo": "pnpm run -C packages/demo preview",
-        "preview:suiue": "pnpm run -C packages/suiue preview"
-    },
+    "scripts": {},
     "devDependencies": {
-        "@types/node": "^20.12.7",
-        "@vitejs/plugin-vue": "^4.6.2",
-        "@vue/test-utils": "2.4.0-alpha.2",
-        "jsdom": "^24.0.0",
-        "typescript": "^5.4.5",
-        "vite": "^5.2.11",
-        "vite-plugin-dts": "^3.8.2",
-        "vitepress": "^1.1.4",
-        "vitest": "^1.5.0",
-        "vue-tsc": "^1.8.27"
+        "@types/node": "^20.19.11",
+        "typescript": "^5.9.2"
     }
 }
